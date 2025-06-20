@@ -12,6 +12,7 @@ export default function LandingPage() {
     {
       Icon: Heart,
       name: "Express Yourself",
+      description: "Share your thoughts, feelings, and moments with authentic expression that resonates with your community.",
       href: "#express",
       cta: "Start Expressing",
       background: (
@@ -22,6 +23,7 @@ export default function LandingPage() {
     {
       Icon: Users,
       name: "Connect",
+      description: "Build meaningful relationships and find your tribe through shared interests and genuine conversations.",
       href: "#connect",
       cta: "Find Your Tribe",
       background: (
@@ -32,6 +34,7 @@ export default function LandingPage() {
     {
       Icon: Zap,
       name: "Engage",
+      description: "Interact with content through our innovative tap system and participate in dynamic discussions.",
       href: "#engage",
       cta: "Start Engaging",
       background: (
@@ -42,6 +45,7 @@ export default function LandingPage() {
     {
       Icon: Globe,
       name: "Discover",
+      description: "Explore new perspectives, trending topics, and discover content that inspires and enlightens you.",
       href: "#discover",
       cta: "Explore Now",
       background: (
@@ -146,7 +150,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section with Bento Grid */}
-      <section id="features" className="py-20 px-4 bg-gradient-to-br from-gray-50/50 to-white/50">
+      <section id="features" className="py-20 px-4 bg-gradient-to-br from-gray-50/30 to-white/30">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -183,7 +187,7 @@ export default function LandingPage() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 px-4 bg-gradient-to-br from-purple-50/30 to-blue-50/30">
+      <section id="about" className="py-20 px-4 bg-gradient-to-br from-purple-50/20 to-blue-50/20">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -215,7 +219,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="grid md:grid-cols-3 gap-8"
           >
-            <div className="text-center p-6 bg-white/40 backdrop-blur-sm rounded-xl border border-white/20">
+            <div className="text-center p-6 bg-white/30 backdrop-blur-sm rounded-xl border border-white/20">
               <Star className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Our Mission</h3>
               <p className="text-gray-600">
@@ -223,7 +227,7 @@ export default function LandingPage() {
                 over superficial metrics and endless scrolling.
               </p>
             </div>
-            <div className="text-center p-6 bg-white/40 backdrop-blur-sm rounded-xl border border-white/20">
+            <div className="text-center p-6 bg-white/30 backdrop-blur-sm rounded-xl border border-white/20">
               <Users className="w-12 h-12 text-blue-500 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Our Vision</h3>
               <p className="text-gray-600">
@@ -231,7 +235,7 @@ export default function LandingPage() {
                 across cultures and communities.
               </p>
             </div>
-            <div className="text-center p-6 bg-white/40 backdrop-blur-sm rounded-xl border border-white/20">
+            <div className="text-center p-6 bg-white/30 backdrop-blur-sm rounded-xl border border-white/20">
               <Heart className="w-12 h-12 text-red-500 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Our Values</h3>
               <p className="text-gray-600">
@@ -244,13 +248,13 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-gray-50/30 to-gray-100/30">
+      <section className="py-20 px-4 bg-gradient-to-br from-gray-50/20 to-gray-100/20">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white/40 backdrop-blur-sm border border-gray-200/30 p-12 rounded-2xl shadow-lg"
+            className="bg-white/30 backdrop-blur-sm border border-gray-200/30 p-12 rounded-2xl shadow-lg"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               Ready to Get Started?
@@ -271,7 +275,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50/50 text-gray-700 py-16 px-4 border-t border-gray-200/50">
+      <footer className="bg-gray-50/30 text-gray-700 py-16 px-4 border-t border-gray-200/30">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand Section */}
