@@ -257,27 +257,27 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-purple-600 to-blue-600">
+      <section className="py-20 px-4 bg-gradient-to-br from-gray-100 to-gray-200">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white/10 backdrop-blur-sm border border-white/20 p-12 rounded-2xl"
+            className="bg-white/70 backdrop-blur-sm border border-gray-200/50 p-12 rounded-2xl shadow-lg"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               Ready to Get Started?
             </h2>
-            <p className="text-white/90 mb-8 text-lg">
+            <p className="text-gray-600 mb-8 text-lg">
               Join thousands of users already sharing their stories and building meaningful connections on TapTalk
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <SignUpButton mode="modal">
-                <button className="px-8 py-4 bg-white text-purple-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors shadow-lg text-lg">
+                <button className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 shadow-lg text-lg">
                   Create Your Account
                 </button>
               </SignUpButton>
-              <button className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-xl hover:bg-white/10 transition-colors text-lg">
+              <button className="px-8 py-4 bg-gray-100 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors text-lg">
                 Learn More
               </button>
             </div>
@@ -286,18 +286,18 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16 px-4">
+      <footer className="bg-gray-100 text-gray-700 py-16 px-4 border-t border-gray-200">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand Section */}
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
                   <MessageCircle className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-2xl font-bold">TapTalk</span>
+                <span className="text-2xl font-bold text-gray-800">TapTalk</span>
               </div>
-              <p className="text-gray-400 mb-6 max-w-md">
+              <p className="text-gray-600 mb-6 max-w-md">
                 Where thoughts take shape and conversations flow. Connect with people who share your passions 
                 and discover new perspectives in a more meaningful way.
               </p>
@@ -306,7 +306,7 @@ export default function LandingPage() {
                   href="https://github.com/swastik-raj-vansh-singh" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-500 hover:text-gray-700 transition-colors"
                 >
                   <Github className="h-6 w-6" />
                 </a>
@@ -314,7 +314,7 @@ export default function LandingPage() {
                   href="https://www.linkedin.com/in/swastikrajvanshsingh/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-500 hover:text-gray-700 transition-colors"
                 >
                   <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
@@ -322,7 +322,7 @@ export default function LandingPage() {
                 </a>
                 <a 
                   href="mailto:swastikrajvanshsingh0@gmail.com" 
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-500 hover:text-gray-700 transition-colors"
                 >
                   <Mail className="h-6 w-6" />
                 </a>
@@ -331,38 +331,38 @@ export default function LandingPage() {
 
             {/* Quick Links */}
             <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Quick Links</h3>
               <ul className="space-y-2">
-                <li><a href="#about" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#features" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#about" className="text-gray-600 hover:text-gray-800 transition-colors">About Us</a></li>
+                <li><a href="#features" className="text-gray-600 hover:text-gray-800 transition-colors">Features</a></li>
+                <li><a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">Pricing</a></li>
+                <li><a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">Contact</a></li>
               </ul>
             </div>
 
             {/* Support */}
             <div>
-              <h3 className="text-lg font-semibold mb-4">Support</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Support</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Community Guidelines</a></li>
+                <li><a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">Help Center</a></li>
+                <li><a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">Community Guidelines</a></li>
               </ul>
             </div>
           </div>
 
           {/* Bottom Border */}
-          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
+          <div className="border-t border-gray-300 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-600 text-sm">
               © 2024 TapTalk. All rights reserved.
             </p>
-            <p className="text-gray-400 text-sm mt-4 md:mt-0">
+            <p className="text-gray-600 text-sm mt-4 md:mt-0">
               Made with ❤️ by <a 
                 href="https://github.com/swastik-raj-vansh-singh" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-purple-400 hover:text-purple-300 transition-colors"
+                className="text-purple-500 hover:text-purple-600 transition-colors"
               >
                 Swastik Raj Vansh Singh
               </a>
