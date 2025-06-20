@@ -1,11 +1,11 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
-import { Edit3, Calendar, Heart } from "lucide-react";
+import { Edit3, Calendar } from "lucide-react";
 import Image from "./Image";
 
 interface UserProfile {
@@ -24,51 +24,25 @@ interface UserProfile {
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({ name: "", bio: "" });
-  const [loading, setLoading] = useState(false);
   const { user } = useUser();
 
-  // Mock profile data
+  // Mock profile data using Clerk user info
   const profile: UserProfile = {
     id: user?.id || "demo",
     name: user?.fullName || "Demo User",
     email: user?.emailAddresses[0]?.emailAddress || "demo@example.com",
     profilePicUrl: user?.imageUrl,
-    bio: "Welcome to my profile! I'm excited to be part of the MicroSocial community.",
-    createdAt: new Date().toISOString(),
+    bio: "Welcome to my profile! I'm excited to be part of the TapTalk community.",
+    createdAt: user?.createdAt ? new Date(user.createdAt).toISOString() : new Date().toISOString(),
     _count: { posts: 1 },
     totalClaps: 5
   };
-
-  useEffect(() => {
-    if (profile) {
-      setEditForm({ name: profile.name, bio: profile.bio || "" });
-    }
-  }, []);
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Mock update - in real app would call API
     setIsEditing(false);
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="max-w-4xl mx-auto pt-24 px-4">
-          <div className="bg-white rounded-xl shadow-sm p-8 animate-pulse">
-            <div className="flex items-center space-x-6">
-              <div className="w-24 h-24 bg-gray-200 rounded-full"></div>
-              <div className="space-y-4">
-                <div className="w-48 h-6 bg-gray-200 rounded"></div>
-                <div className="w-32 h-4 bg-gray-200 rounded"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">

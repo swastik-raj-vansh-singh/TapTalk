@@ -1,14 +1,14 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import PostCard from "@/components/PostCard";
 import CreatePost from "@/components/CreatePost";
 import { motion } from "framer-motion";
-import { fetchPosts, upsertUserProfile, updateClapCount, type Post } from "@/lib/api";
+import { fetchPosts, upsertUserProfile, updateClapCount } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function FeedPage() {
