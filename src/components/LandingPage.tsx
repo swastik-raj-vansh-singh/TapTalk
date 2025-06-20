@@ -18,7 +18,7 @@ export default function LandingPage() {
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-pink-500/30 to-rose-500/30 opacity-80" />
       ),
-      className: "lg:col-span-1 lg:row-span-1",
+      className: "",
     },
     {
       Icon: Users,
@@ -29,7 +29,7 @@ export default function LandingPage() {
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/30 to-indigo-500/30 opacity-80" />
       ),
-      className: "lg:col-span-1 lg:row-span-1",
+      className: "",
     },
     {
       Icon: Zap,
@@ -40,7 +40,7 @@ export default function LandingPage() {
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/30 to-orange-500/30 opacity-80" />
       ),
-      className: "lg:col-span-1 lg:row-span-1",
+      className: "",
     },
     {
       Icon: Globe,
@@ -51,7 +51,7 @@ export default function LandingPage() {
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-green-500/30 to-emerald-500/30 opacity-80" />
       ),
-      className: "lg:col-span-1 lg:row-span-1",
+      className: "",
     },
   ];
 
@@ -178,7 +178,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <BentoGrid className="grid-cols-1 md:grid-cols-2 lg:grid-cols-4 auto-rows-[20rem] gap-6">
+            <BentoGrid>
               {features.map((feature, index) => (
                 <motion.div
                   key={feature.name}
