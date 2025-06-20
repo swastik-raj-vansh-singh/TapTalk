@@ -1,12 +1,11 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/clerk-react";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
 import { Edit3, Calendar, Heart } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/Image";
 
 interface UserProfile {
   id: string;
@@ -22,48 +21,33 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({ name: "", bio: "" });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { user } = useUser();
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
-    try {
-      const response = await fetch("/api/user/profile");
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data);
-        setEditForm({ name: data.name, bio: data.bio || "" });
-      }
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    } finally {
-      setLoading(false);
-    }
+  // Mock profile data
+  const profile: UserProfile = {
+    id: user?.id || "demo",
+    name: user?.fullName || "Demo User",
+    email: user?.emailAddresses[0]?.emailAddress || "demo@example.com",
+    profilePicUrl: user?.imageUrl,
+    bio: "Welcome to my profile! I'm excited to be part of the MicroSocial community.",
+    createdAt: new Date().toISOString(),
+    _count: { posts: 1 },
+    totalClaps: 5
   };
+
+  useEffect(() => {
+    if (profile) {
+      setEditForm({ name: profile.name, bio: profile.bio || "" });
+    }
+  }, []);
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const response = await fetch("/api/user/profile", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editForm),
-      });
-
-      if (response.ok) {
-        const updatedProfile = await response.json();
-        setProfile(updatedProfile);
-        setIsEditing(false);
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
+    // Mock update - in real app would call API
+    setIsEditing(false);
   };
 
   if (loading) {

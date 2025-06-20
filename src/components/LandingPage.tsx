@@ -1,7 +1,7 @@
 
 "use client";
 
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { Heart, Users, Zap, Globe } from "lucide-react";
 

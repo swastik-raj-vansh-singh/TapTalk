@@ -1,8 +1,7 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/clerk-react";
 import Navbar from "@/components/Navbar";
 import PostCard from "@/components/PostCard";
 import CreatePost from "@/components/CreatePost";
@@ -21,48 +20,34 @@ interface Post {
   };
 }
 
-export default function FeedPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { user } = useUser();
-
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch("/api/posts");
-      if (response.ok) {
-        const data = await response.json();
-        setPosts(data);
-      }
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    } finally {
-      setLoading(false);
+// Mock data for development
+const mockPosts: Post[] = [
+  {
+    id: "1",
+    text: "Welcome to MicroSocial! This is a demo post to show how the platform works. Share your thoughts and connect with others!",
+    clapCount: 5,
+    createdAt: new Date().toISOString(),
+    user: {
+      id: "demo",
+      name: "Demo User",
+      profilePicUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
     }
-  };
+  }
+];
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+export default function FeedPage() {
+  const [posts, setPosts] = useState<Post[]>(mockPosts);
+  const [loading, setLoading] = useState(false);
+  const { user } = useUser();
 
   const handleNewPost = (newPost: Post) => {
     setPosts([newPost, ...posts]);
   };
 
   const handleClap = async (postId: string) => {
-    try {
-      const response = await fetch(`/api/posts/${postId}/clap`, {
-        method: "POST",
-      });
-      
-      if (response.ok) {
-        const updatedPost = await response.json();
-        setPosts(posts.map(post => 
-          post.id === postId ? { ...post, clapCount: updatedPost.clapCount } : post
-        ));
-      }
-    } catch (error) {
-      console.error("Error clapping post:", error);
-    }
+    setPosts(posts.map(post => 
+      post.id === postId ? { ...post, clapCount: post.clapCount + 1 } : post
+    ));
   };
 
   if (loading) {
