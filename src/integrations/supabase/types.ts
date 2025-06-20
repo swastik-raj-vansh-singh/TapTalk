@@ -50,8 +50,38 @@ export type Database = {
           },
         ]
       }
+      user_claps: {
+        Row: {
+          clerk_user_id: string
+          created_at: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          clerk_user_id: string
+          created_at?: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          clerk_user_id?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_claps_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_profiles: {
         Row: {
+          bio: string | null
           clerk_user_id: string
           created_at: string
           email: string
@@ -60,6 +90,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          bio?: string | null
           clerk_user_id: string
           created_at?: string
           email: string
@@ -68,6 +99,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          bio?: string | null
           clerk_user_id?: string
           created_at?: string
           email?: string
@@ -82,6 +114,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_user_clapped: {
+        Args: { user_id: string; post_id: string }
+        Returns: boolean
+      }
       increment_clap_count: {
         Args: { post_id: string }
         Returns: undefined

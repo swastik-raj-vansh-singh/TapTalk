@@ -19,6 +19,7 @@ export interface UserProfile {
   name: string;
   email: string;
   profile_image_url?: string;
+  bio?: string;
 }
 
 // Create or update user profile
@@ -33,6 +34,45 @@ export const upsertUserProfile = async (profile: UserProfile) => {
     throw error;
   }
   console.log("User profile upserted successfully:", data);
+  return data;
+};
+
+// Get user profile by clerk_user_id
+export const getUserProfile = async (clerkUserId: string): Promise<UserProfile | null> => {
+  console.log("Fetching user profile for:", clerkUserId);
+  
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .select('*')
+    .eq('clerk_user_id', clerkUserId)
+    .single();
+  
+  if (error) {
+    console.error("Error fetching user profile:", error);
+    return null;
+  }
+  
+  console.log("User profile fetched successfully:", data);
+  return data;
+};
+
+// Update user profile
+export const updateUserProfile = async (clerkUserId: string, updates: Partial<UserProfile>) => {
+  console.log("Updating user profile for:", clerkUserId, "with:", updates);
+  
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .update(updates)
+    .eq('clerk_user_id', clerkUserId)
+    .select()
+    .single();
+  
+  if (error) {
+    console.error("Error updating user profile:", error);
+    throw error;
+  }
+  
+  console.log("User profile updated successfully:", data);
   return data;
 };
 
@@ -88,13 +128,52 @@ export const fetchPosts = async (): Promise<Post[]> => {
   return data || [];
 };
 
-// Update clap count
-export const updateClapCount = async (postId: string, newCount: number) => {
-  console.log("Updating clap count for post:", postId, "to:", newCount);
+// Check if user has clapped on a post
+export const hasUserClapped = async (clerkUserId: string, postId: string): Promise<boolean> => {
+  console.log("Checking if user clapped:", clerkUserId, postId);
   
   const { data, error } = await supabase
+    .from('user_claps')
+    .select('id')
+    .eq('clerk_user_id', clerkUserId)
+    .eq('post_id', postId)
+    .single();
+  
+  if (error && error.code !== 'PGRST116') {
+    console.error("Error checking user clap:", error);
+    return false;
+  }
+  
+  return !!data;
+};
+
+// Add a clap to a post
+export const addClap = async (clerkUserId: string, postId: string) => {
+  console.log("Adding clap:", clerkUserId, postId);
+  
+  // First check if user already clapped
+  const alreadyClapped = await hasUserClapped(clerkUserId, postId);
+  if (alreadyClapped) {
+    throw new Error("User has already clapped this post");
+  }
+  
+  // Add the clap record
+  const { error: clapError } = await supabase
+    .from('user_claps')
+    .insert({
+      clerk_user_id: clerkUserId,
+      post_id: postId
+    });
+  
+  if (clapError) {
+    console.error("Error adding clap:", clapError);
+    throw clapError;
+  }
+  
+  // Increment the clap count
+  const { data, error } = await supabase
     .from('posts')
-    .update({ clap_count: newCount })
+    .update({ clap_count: supabase.sql`clap_count + 1` })
     .eq('id', postId)
     .select()
     .single();
@@ -104,17 +183,20 @@ export const updateClapCount = async (postId: string, newCount: number) => {
     throw error;
   }
   
-  console.log("Clap count updated successfully:", data);
+  console.log("Clap added successfully:", data);
   return data;
 };
 
 // Upload image to storage
-export const uploadImage = async (file: File, fileName: string) => {
-  console.log("Uploading image:", fileName);
+export const uploadImage = async (file: File, fileName: string, bucket: string = 'post-images') => {
+  console.log("Uploading image:", fileName, "to bucket:", bucket);
   
   const { data, error } = await supabase.storage
-    .from('post-images')
-    .upload(fileName, file);
+    .from(bucket)
+    .upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: true
+    });
   
   if (error) {
     console.error("Error uploading image:", error);
@@ -123,9 +205,21 @@ export const uploadImage = async (file: File, fileName: string) => {
   
   // Get public URL
   const { data: { publicUrl } } = supabase.storage
-    .from('post-images')
+    .from(bucket)
     .getPublicUrl(fileName);
   
   console.log("Image uploaded successfully, public URL:", publicUrl);
   return publicUrl;
+};
+
+// Upload profile image
+export const uploadProfileImage = async (file: File, clerkUserId: string) => {
+  const fileName = `${clerkUserId}-${Date.now()}.${file.name.split('.').pop()}`;
+  return uploadImage(file, fileName, 'profile-images');
+};
+
+// Legacy function for backward compatibility
+export const updateClapCount = async (postId: string, newCount: number) => {
+  console.log("Legacy updateClapCount called - this should not be used anymore");
+  return null;
 };
