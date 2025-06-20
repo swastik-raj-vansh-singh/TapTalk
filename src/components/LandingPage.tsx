@@ -3,7 +3,7 @@
 
 import { SignInButton, SignUpButton } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
-import { Heart, Users, Zap, Globe } from "lucide-react";
+import { Heart, Users, Zap, Globe, Twitter, Github, Mail } from "lucide-react";
 import { LavaLamp } from "./ui/fluid-blob";
 import { BentoCard, BentoGrid } from "./ui/bento-grid";
 
@@ -18,7 +18,7 @@ export default function LandingPage() {
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-pink-400/20 to-red-400/20" />
       ),
-      className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
+      className: "lg:col-span-1",
     },
     {
       Icon: Users,
@@ -29,7 +29,7 @@ export default function LandingPage() {
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-indigo-400/20" />
       ),
-      className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
+      className: "lg:col-span-1",
     },
     {
       Icon: Zap,
@@ -40,7 +40,7 @@ export default function LandingPage() {
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-orange-400/20" />
       ),
-      className: "lg:col-start-1 lg:col-end-2 lg:row-start-3 lg:row-end-4",
+      className: "lg:col-span-1",
     },
     {
       Icon: Globe,
@@ -51,7 +51,7 @@ export default function LandingPage() {
       background: (
         <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 to-emerald-400/20" />
       ),
-      className: "lg:col-start-3 lg:col-end-3 lg:row-start-1 lg:row-end-4",
+      className: "lg:col-span-1",
     },
   ];
 
@@ -100,7 +100,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-6xl md:text-8xl font-bold tracking-tight text-black drop-shadow-2xl whitespace-nowrap mb-6"
+            className="text-6xl md:text-8xl font-bold tracking-tight text-gray-900 drop-shadow-2xl whitespace-nowrap mb-6"
           >
             TapTalk
           </motion.h1>
@@ -109,7 +109,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-lg md:text-xl text-center text-black drop-shadow-lg max-w-2xl leading-relaxed mb-10 mx-auto font-medium"
+            className="text-lg md:text-xl text-center text-gray-800 drop-shadow-lg max-w-2xl leading-relaxed mb-10 mx-auto font-medium"
           >
             Where thoughts take shape and conversations flow like liquid mercury through infinite connections.
           </motion.p>
@@ -120,7 +120,7 @@ export default function LandingPage() {
             transition={{ delay: 0.6 }}
           >
             <SignUpButton mode="modal">
-              <button className="px-8 py-4 bg-black text-white font-semibold rounded-xl hover:bg-gray-800 transition-colors shadow-lg text-lg">
+              <button className="px-8 py-4 bg-gray-900 text-white font-semibold rounded-xl hover:bg-gray-800 transition-colors shadow-lg text-lg">
                 Start Your Journey
               </button>
             </SignUpButton>
@@ -130,7 +130,7 @@ export default function LandingPage() {
 
       {/* Features Section with Bento Grid */}
       <section className="py-20 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -146,7 +146,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <BentoGrid className="lg:grid-rows-3 max-w-4xl mx-auto">
+            <BentoGrid className="grid-cols-1 md:grid-cols-2 lg:grid-cols-4 auto-rows-[20rem]">
               {features.map((feature, index) => (
                 <motion.div
                   key={feature.name}
@@ -164,28 +164,91 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 gradient-bg">
+      <section className="py-20 px-4 bg-gradient-to-br from-purple-600 to-blue-600">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="glass-effect p-12 rounded-2xl"
+            className="bg-white/10 backdrop-blur-sm border border-white/20 p-12 rounded-2xl"
           >
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+            <h2 className="text-3xl font-bold text-white mb-4">
               Ready to Get Started?
             </h2>
-            <p className="text-gray-600 mb-8">
+            <p className="text-white/90 mb-8">
               Join thousands of users already sharing their stories on TapTalk
             </p>
             <SignUpButton mode="modal">
-              <button className="px-8 py-4 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors shadow-lg">
+              <button className="px-8 py-4 bg-white text-purple-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors shadow-lg">
                 Create Your Account
               </button>
             </SignUpButton>
           </motion.div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Brand Section */}
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xl">T</span>
+                </div>
+                <span className="text-2xl font-bold">TapTalk</span>
+              </div>
+              <p className="text-gray-400 mb-6 max-w-md">
+                Where thoughts take shape and conversations flow. Connect with people who share your passions and discover new perspectives.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Twitter className="h-6 w-6" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Github className="h-6 w-6" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Mail className="h-6 w-6" />
+                </a>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Support</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Community Guidelines</a></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Border */}
+          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm">
+              © 2024 TapTalk. All rights reserved.
+            </p>
+            <p className="text-gray-400 text-sm mt-4 md:mt-0">
+              Made with ❤️ for meaningful connections
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
