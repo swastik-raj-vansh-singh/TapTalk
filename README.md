@@ -1,73 +1,157 @@
-# Welcome to your Lovable project
 
-## Project info
+# MicroSocial - A Modern Social Media Platform
 
-**URL**: https://lovable.dev/projects/33770880-8f1b-48f8-98ca-7458e21b2ca5
+A beautiful, full-stack social media application built with Next.js, featuring user authentication, post creation, and engaging interactions.
 
-## How can I edit this code?
+## 🚀 Features
 
-There are several ways of editing your application.
+- **Authentication**: Secure sign-up/sign-in with Clerk
+- **User Profiles**: Customizable profiles with avatars and bios
+- **Post Creation**: Share text posts with optional images
+- **Global Feed**: View all posts in chronological order
+- **Clap System**: Medium-style appreciation system
+- **Responsive Design**: Beautiful UI that works on all devices
+- **Real-time Updates**: Seamless user experience with optimistic updates
 
-**Use Lovable**
+## 🛠 Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/33770880-8f1b-48f8-98ca-7458e21b2ca5) and start prompting.
+### Frontend
+- **Next.js 14** (App Router)
+- **React** with TypeScript
+- **Tailwind CSS** for styling
+- **Framer Motion** for animations
+- **Clerk** for authentication
 
-Changes made via Lovable will be committed automatically to this repo.
+### Backend
+- **Next.js API Routes**
+- **Prisma** ORM
+- **Supabase** (PostgreSQL)
+- **Cloudinary** for image uploads
 
-**Use your preferred IDE**
+## 📱 Pages
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Landing Page**: Beautiful hero section with feature highlights
+- **Feed**: Global post feed with create post functionality
+- **Profile**: User profile management and statistics
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🎨 Design Features
 
-Follow these steps:
+- Modern gradient backgrounds
+- Glass morphism effects
+- Smooth hover animations
+- Responsive mobile-first design
+- Beautiful typography and spacing
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 📊 Database Schema
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Users Table
+- User profiles with Clerk integration
+- Name, email, bio, profile picture
+- Post count and clap statistics
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Posts Table
+- Text content and optional images
+- Clap count tracking
+- User relationship and timestamps
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 🔧 Setup Instructions
 
-**Edit a file directly in GitHub**
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd microsocial
+   ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-**Use GitHub Codespaces**
+3. **Environment Setup**
+   Create a `.env.local` file with:
+   ```env
+   # Clerk Authentication
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+   CLERK_SECRET_KEY=your_clerk_secret_key
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+   # Database
+   DATABASE_URL=your_supabase_database_url
 
-## What technologies are used for this project?
+   # Cloudinary (for image uploads)
+   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+   CLOUDINARY_API_KEY=your_api_key
+   CLOUDINARY_API_SECRET=your_api_secret
+   ```
 
-This project is built with:
+4. **Database Setup**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+5. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-## How can I deploy this project?
+6. **Open [http://localhost:3000](http://localhost:3000)**
 
-Simply open [Lovable](https://lovable.dev/projects/33770880-8f1b-48f8-98ca-7458e21b2ca5) and click on Share -> Publish.
+## 🚀 Deployment
 
-## Can I connect a custom domain to my Lovable project?
+This app is designed to be deployed on Vercel:
 
-Yes, you can!
+1. Connect your GitHub repository to Vercel
+2. Add environment variables in Vercel dashboard
+3. Deploy automatically on every push
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🎯 Key Features Implemented
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Authentication Flow
+- Seamless Clerk integration
+- Protected routes and middleware
+- Automatic user creation in database
+
+### Post Management
+- Rich text post creation
+- Image upload with Cloudinary
+- Optimistic UI updates
+- Real-time clap reactions
+
+### User Experience
+- Beautiful loading states
+- Smooth animations
+- Mobile-responsive design
+- Intuitive navigation
+
+## 📈 Future Enhancements
+
+- [ ] Comment system
+- [ ] User following/followers
+- [ ] Post search and filtering
+- [ ] Push notifications
+- [ ] Direct messaging
+- [ ] Content moderation tools
+
+## 🔒 Security Features
+
+- Clerk authentication middleware
+- API route protection
+- Input validation and sanitization
+- Secure database queries with Prisma
+
+## 📱 Mobile Experience
+
+- Fully responsive design
+- Touch-friendly interactions
+- Optimized for mobile performance
+- Progressive Web App capabilities
+
+## 🎨 UI/UX Highlights
+
+- Modern glassmorphism design
+- Smooth Framer Motion animations
+- Intuitive user interactions
+- Beautiful gradient backgrounds
+- Consistent design system
+
+Built with ❤️ for modern web development
