@@ -108,7 +108,7 @@ void main() {
 `;
 
 function LavaLampShader() {
-  const meshRef = useRef();
+  const meshRef = useRef<THREE.Mesh>(null);
   const { size } = useThree();
   
   const uniforms = useMemo(() => ({
@@ -143,9 +143,11 @@ function LavaLampShader() {
     <mesh ref={meshRef}>
       <planeGeometry args={[5, 5]} />
       <shaderMaterial
-        uniforms={uniforms}
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
+        args={[{
+          uniforms,
+          vertexShader,
+          fragmentShader
+        }]}
       />
     </mesh>
   );
