@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Post {
@@ -20,6 +19,7 @@ export interface UserProfile {
   email: string;
   profile_image_url?: string;
   bio?: string;
+  created_at?: string;
 }
 
 // Create or update user profile
@@ -170,20 +170,17 @@ export const addClap = async (clerkUserId: string, postId: string) => {
     throw clapError;
   }
   
-  // Increment the clap count
-  const { data, error } = await supabase
-    .from('posts')
-    .update({ clap_count: supabase.sql`clap_count + 1` })
-    .eq('id', postId)
-    .select()
-    .single();
+  // Increment the clap count using RPC call
+  const { data, error } = await supabase.rpc('increment_clap_count', {
+    post_id: postId
+  });
   
   if (error) {
     console.error("Error updating clap count:", error);
     throw error;
   }
   
-  console.log("Clap added successfully:", data);
+  console.log("Clap added successfully");
   return data;
 };
 
