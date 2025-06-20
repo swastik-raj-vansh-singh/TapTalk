@@ -1,4 +1,3 @@
-
 "use client";
 
 import { SignInButton, SignUpButton } from "@clerk/clerk-react";
@@ -6,13 +5,13 @@ import { motion } from "framer-motion";
 import { Heart, Users, Zap, Globe, Twitter, Github, Mail, ArrowRight, MessageCircle, Sparkles, Star } from "lucide-react";
 import { LavaLamp } from "./ui/fluid-blob";
 import { BentoCard, BentoGrid } from "./ui/bento-grid";
+import { Link } from "react-router-dom";
 
 export default function LandingPage() {
   const features = [
     {
       Icon: Heart,
       name: "Express Yourself",
-      description: "Share your thoughts and moments with the world in creative ways that truly represent who you are",
       href: "#express",
       cta: "Start Expressing",
       background: (
@@ -23,7 +22,6 @@ export default function LandingPage() {
     {
       Icon: Users,
       name: "Connect",
-      description: "Build meaningful connections with like-minded people from around the globe and expand your network",
       href: "#connect",
       cta: "Find Your Tribe",
       background: (
@@ -34,7 +32,6 @@ export default function LandingPage() {
     {
       Icon: Zap,
       name: "Engage",
-      description: "React with taps and show appreciation for great content instantly with our unique engagement system",
       href: "#engage",
       cta: "Start Engaging",
       background: (
@@ -45,7 +42,6 @@ export default function LandingPage() {
     {
       Icon: Globe,
       name: "Discover",
-      description: "Explore a global feed of diverse perspectives, stories, and content from creators worldwide",
       href: "#discover",
       cta: "Explore Now",
       background: (
@@ -81,16 +77,12 @@ export default function LandingPage() {
             >
               <a href="#features" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">Features</a>
               <a href="#about" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">About</a>
-              <SignInButton mode="modal">
-                <button className="px-4 py-2 text-gray-700 hover:text-purple-600 transition-colors font-medium">
-                  Sign In
-                </button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
-                  Get Started
-                </button>
-              </SignUpButton>
+              <Link to="/auth" className="px-4 py-2 text-gray-700 hover:text-purple-600 transition-colors font-medium">
+                Sign In
+              </Link>
+              <Link to="/auth" className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
+                Get Started
+              </Link>
             </motion.div>
           </div>
         </div>
@@ -142,12 +134,10 @@ export default function LandingPage() {
             transition={{ delay: 0.8 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <SignUpButton mode="modal">
-              <button className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 text-lg flex items-center group">
-                Start Your Journey
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </SignUpButton>
+            <Link to="/auth" className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 text-lg flex items-center group">
+              Start Your Journey
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
             <button className="px-8 py-4 bg-white/20 backdrop-blur-sm text-gray-800 font-semibold rounded-xl border border-white/30 hover:bg-white/30 transition-all duration-300 text-lg">
               Watch Demo
             </button>
@@ -156,7 +146,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section with Bento Grid */}
-      <section id="features" className="py-20 px-4 bg-gradient-to-br from-gray-50 to-white">
+      <section id="features" className="py-20 px-4 bg-gradient-to-br from-gray-50/50 to-white/50">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -167,9 +157,6 @@ export default function LandingPage() {
             <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
               Why Choose TapTalk?
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover powerful features designed to enhance your social experience and connect you with what matters most.
-            </p>
           </motion.div>
           
           <motion.div
@@ -196,7 +183,7 @@ export default function LandingPage() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 px-4 bg-gradient-to-br from-purple-50 to-blue-50">
+      <section id="about" className="py-20 px-4 bg-gradient-to-br from-purple-50/30 to-blue-50/30">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -228,7 +215,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="grid md:grid-cols-3 gap-8"
           >
-            <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20">
+            <div className="text-center p-6 bg-white/40 backdrop-blur-sm rounded-xl border border-white/20">
               <Star className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Our Mission</h3>
               <p className="text-gray-600">
@@ -236,7 +223,7 @@ export default function LandingPage() {
                 over superficial metrics and endless scrolling.
               </p>
             </div>
-            <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20">
+            <div className="text-center p-6 bg-white/40 backdrop-blur-sm rounded-xl border border-white/20">
               <Users className="w-12 h-12 text-blue-500 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Our Vision</h3>
               <p className="text-gray-600">
@@ -244,7 +231,7 @@ export default function LandingPage() {
                 across cultures and communities.
               </p>
             </div>
-            <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20">
+            <div className="text-center p-6 bg-white/40 backdrop-blur-sm rounded-xl border border-white/20">
               <Heart className="w-12 h-12 text-red-500 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Our Values</h3>
               <p className="text-gray-600">
@@ -257,13 +244,13 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-gray-100 to-gray-200">
+      <section className="py-20 px-4 bg-gradient-to-br from-gray-50/30 to-gray-100/30">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white/70 backdrop-blur-sm border border-gray-200/50 p-12 rounded-2xl shadow-lg"
+            className="bg-white/40 backdrop-blur-sm border border-gray-200/30 p-12 rounded-2xl shadow-lg"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               Ready to Get Started?
@@ -272,11 +259,9 @@ export default function LandingPage() {
               Join thousands of users already sharing their stories and building meaningful connections on TapTalk
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <SignUpButton mode="modal">
-                <button className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 shadow-lg text-lg">
-                  Create Your Account
-                </button>
-              </SignUpButton>
+              <Link to="/auth" className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-xl hover:shadow-xl transition-all duration-300 shadow-lg text-lg">
+                Create Your Account
+              </Link>
               <button className="px-8 py-4 bg-gray-100 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors text-lg">
                 Learn More
               </button>
@@ -286,7 +271,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-100 text-gray-700 py-16 px-4 border-t border-gray-200">
+      <footer className="bg-gray-50/50 text-gray-700 py-16 px-4 border-t border-gray-200/50">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand Section */}

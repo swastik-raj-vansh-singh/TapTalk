@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./components/LandingPage";
 import FeedPage from "./components/FeedPage";
 import ProfilePage from "./components/ProfilePage";
+import AuthPage from "./components/AuthPage";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,19 @@ const App = () => (
                 <>
                   <SignedOut>
                     <LandingPage />
+                  </SignedOut>
+                  <SignedIn>
+                    <Navigate to="/feed" replace />
+                  </SignedIn>
+                </>
+              } 
+            />
+            <Route 
+              path="/auth" 
+              element={
+                <>
+                  <SignedOut>
+                    <AuthPage />
                   </SignedOut>
                   <SignedIn>
                     <Navigate to="/feed" replace />
