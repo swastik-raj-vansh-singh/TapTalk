@@ -122,7 +122,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-6xl md:text-8xl font-bold tracking-tight mb-6 relative"
+            className="text-6xl md:text-8xl font-bold tracking-tight mb-10 relative"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent blur-sm scale-105"></div>
             <div 
@@ -135,26 +135,6 @@ export default function LandingPage() {
               TapTalk
             </div>
           </motion.h1>
-          
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="text-xl md:text-2xl text-center max-w-4xl leading-relaxed mb-10 mx-auto font-medium relative"
-          >
-            <div 
-              className="relative text-gray-800 font-semibold px-6 py-4 rounded-2xl"
-              style={{
-                textShadow: '0 0 20px rgba(255,255,255,0.95), 2px 2px 4px rgba(0,0,0,0.7)',
-                backgroundColor: 'rgba(255,255,255,0.85)',
-                backdropFilter: 'blur(15px)',
-                border: '2px solid rgba(255,255,255,0.6)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
-              }}
-            >
-              Transform your social media experience with TapTalk - where authentic conversations flourish, meaningful connections are forged, and every interaction matters. Join a community that values genuine engagement over empty metrics.
-            </div>
-          </motion.p>
           
           <motion.div
             initial={{ opacity: 0, y: 30 }}
