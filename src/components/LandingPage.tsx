@@ -5,29 +5,54 @@ import { SignInButton, SignUpButton } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { Heart, Users, Zap, Globe } from "lucide-react";
 import { LavaLamp } from "./ui/fluid-blob";
+import { BentoCard, BentoGrid } from "./ui/bento-grid";
 
 export default function LandingPage() {
   const features = [
     {
-      icon: <Heart className="w-8 h-8" />,
-      title: "Express Yourself",
-      description: "Share your thoughts and moments with the world"
+      Icon: Heart,
+      name: "Express Yourself",
+      description: "Share your thoughts and moments with the world in creative ways",
+      href: "#",
+      cta: "Start Expressing",
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-400/20 to-red-400/20" />
+      ),
+      className: "lg:row-start-1 lg:row-end-4 lg:col-start-2 lg:col-end-3",
     },
     {
-      icon: <Users className="w-8 h-8" />,
-      title: "Connect",
-      description: "Build meaningful connections with like-minded people"
+      Icon: Users,
+      name: "Connect",
+      description: "Build meaningful connections with like-minded people from around the globe",
+      href: "#",
+      cta: "Find Your Tribe",
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-indigo-400/20" />
+      ),
+      className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
     },
     {
-      icon: <Zap className="w-8 h-8" />,
-      title: "Engage",
-      description: "React with taps and show appreciation for great content"
+      Icon: Zap,
+      name: "Engage",
+      description: "React with taps and show appreciation for great content instantly",
+      href: "#",
+      cta: "Start Engaging",
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-orange-400/20" />
+      ),
+      className: "lg:col-start-1 lg:col-end-2 lg:row-start-3 lg:row-end-4",
     },
     {
-      icon: <Globe className="w-8 h-8" />,
-      title: "Discover",
-      description: "Explore a global feed of diverse perspectives and stories"
-    }
+      Icon: Globe,
+      name: "Discover",
+      description: "Explore a global feed of diverse perspectives and stories",
+      href: "#",
+      cta: "Explore Now",
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 to-emerald-400/20" />
+      ),
+      className: "lg:col-start-3 lg:col-end-3 lg:row-start-1 lg:row-end-4",
+    },
   ];
 
   return (
@@ -75,7 +100,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-6xl md:text-8xl font-bold tracking-tight mix-blend-exclusion text-white whitespace-nowrap mb-6"
+            className="text-6xl md:text-8xl font-bold tracking-tight text-black drop-shadow-2xl whitespace-nowrap mb-6"
           >
             TapTalk
           </motion.h1>
@@ -84,7 +109,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-lg md:text-xl text-center text-white mix-blend-exclusion max-w-2xl leading-relaxed mb-10 mx-auto"
+            className="text-lg md:text-xl text-center text-black drop-shadow-lg max-w-2xl leading-relaxed mb-10 mx-auto font-medium"
           >
             Where thoughts take shape and conversations flow like liquid mercury through infinite connections.
           </motion.p>
@@ -95,7 +120,7 @@ export default function LandingPage() {
             transition={{ delay: 0.6 }}
           >
             <SignUpButton mode="modal">
-              <button className="px-8 py-4 bg-white text-black font-semibold rounded-xl hover:bg-gray-100 transition-colors shadow-lg text-lg mix-blend-exclusion">
+              <button className="px-8 py-4 bg-black text-white font-semibold rounded-xl hover:bg-gray-800 transition-colors shadow-lg text-lg">
                 Start Your Journey
               </button>
             </SignUpButton>
@@ -103,40 +128,38 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 gradient-bg">
+      {/* Features Section with Bento Grid */}
+      <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl font-bold text-center text-white mb-16"
+            className="text-4xl font-bold text-center text-gray-800 mb-16"
           >
             Why Choose TapTalk?
           </motion.h2>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="glass-effect p-6 rounded-xl hover-lift"
-              >
-                <div className="text-primary mb-4">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
+            <BentoGrid className="lg:grid-rows-3 max-w-4xl mx-auto">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={feature.name}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <BentoCard {...feature} />
+                </motion.div>
+              ))}
+            </BentoGrid>
+          </motion.div>
         </div>
       </section>
 
