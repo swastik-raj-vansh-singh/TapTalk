@@ -2,10 +2,10 @@
 "use client";
 
 import { useState } from "react";
-import { useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { Camera, Send, X } from "lucide-react";
-import Image from "next/image";
+import Image from "./Image";
 
 interface CreatePostProps {
   onPostCreated: (post: any) => void;
@@ -41,47 +41,24 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
 
     setIsLoading(true);
     try {
-      let imageUrl = null;
-
-      // Upload image if present
-      if (imageFile) {
-        const formData = new FormData();
-        formData.append("file", imageFile);
-        formData.append("upload_preset", "microsocial");
-
-        const cloudinaryResponse = await fetch(
-          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-
-        if (cloudinaryResponse.ok) {
-          const cloudinaryData = await cloudinaryResponse.json();
-          imageUrl = cloudinaryData.secure_url;
+      // Mock post creation for development
+      const newPost = {
+        id: Date.now().toString(),
+        text,
+        imageUrl: imagePreview,
+        clapCount: 0,
+        createdAt: new Date().toISOString(),
+        user: {
+          id: user?.id || "demo",
+          name: user?.fullName || "Demo User",
+          profilePicUrl: user?.imageUrl
         }
-      }
+      };
 
-      // Create post
-      const response = await fetch("/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text,
-          imageUrl,
-        }),
-      });
-
-      if (response.ok) {
-        const newPost = await response.json();
-        onPostCreated(newPost);
-        setText("");
-        setImageFile(null);
-        setImagePreview(null);
-      }
+      onPostCreated(newPost);
+      setText("");
+      setImageFile(null);
+      setImagePreview(null);
     } catch (error) {
       console.error("Error creating post:", error);
     } finally {

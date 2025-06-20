@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import Image from "./Image";
 import { motion } from "framer-motion";
 import { Heart, MessageCircle, Share } from "lucide-react";
 

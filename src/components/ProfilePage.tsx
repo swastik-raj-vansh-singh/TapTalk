@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -5,7 +6,7 @@ import { useUser } from "@clerk/clerk-react";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
 import { Edit3, Calendar, Heart } from "lucide-react";
-import Image from "@/components/Image";
+import Image from "./Image";
 
 interface UserProfile {
   id: string;
