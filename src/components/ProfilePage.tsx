@@ -1,148 +1,116 @@
-
-"use client";
-
-import { useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
-import Navbar from "@/components/Navbar";
-import { motion } from "framer-motion";
-import { Edit3, Calendar, Camera, Save, X } from "lucide-react";
-import Image from "./Image";
-import { getUserProfile, updateUserProfile, uploadProfileImage } from "@/lib/api";
-import { useToast } from "@/hooks/use-toast";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useRef } from "react";
+import { getUserProfile, updateUserProfile, uploadProfileImage, fetchPosts } from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Camera, Edit3, Save, X } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import Navbar from "./Navbar";
+import PostCard from "./PostCard";
 
 export default function ProfilePage() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({ name: "", bio: "" });
-  const [isUploading, setIsUploading] = useState(false);
-  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { user } = useUser();
-  const { toast } = useToast();
   const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: '',
+    bio: ''
+  });
 
-  // Fetch user profile data
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ['user-profile', user?.id],
-    queryFn: () => getUserProfile(user?.id || ''),
+  const { data: userProfile, isLoading: profileLoading } = useQuery({
+    queryKey: ['userProfile', user?.id],
+    queryFn: () => user ? getUserProfile(user.id) : null,
     enabled: !!user?.id,
   });
 
-  useEffect(() => {
-    if (profile) {
-      setEditForm({
-        name: profile.name || '',
-        bio: profile.bio || ''
-      });
-    }
-  }, [profile]);
+  const { data: userPosts = [], isLoading: postsLoading } = useQuery({
+    queryKey: ['userPosts', user?.id],
+    queryFn: async () => {
+      const allPosts = await fetchPosts();
+      return allPosts.filter(post => post.clerk_user_id === user?.id);
+    },
+    enabled: !!user?.id,
+  });
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        toast({
-          title: "Invalid file type",
-          description: "Please select an image file",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: "Please select an image smaller than 5MB",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      setProfileImageFile(file);
-      
-      // Create preview URL
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreviewUrl(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleSaveProfile = async () => {
-    if (!user?.id) return;
-
-    try {
-      setIsUploading(true);
-      let profileImageUrl = profile?.profile_image_url;
-
-      // Upload new profile image if selected
-      if (profileImageFile) {
-        profileImageUrl = await uploadProfileImage(profileImageFile, user.id);
-      }
-
-      // Update profile
-      const updates = {
-        name: editForm.name,
-        bio: editForm.bio,
-        ...(profileImageUrl && { profile_image_url: profileImageUrl })
-      };
-
-      await updateUserProfile(user.id, updates);
-
-      // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ['user-profile'] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-
+  const updateProfileMutation = useMutation({
+    mutationFn: (updates: { name?: string; bio?: string; profile_image_url?: string }) =>
+      updateUserProfile(user!.id, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userProfile', user?.id] });
       toast({
         title: "Profile updated",
-        description: "Your profile has been successfully updated"
+        description: "Your profile has been successfully updated.",
       });
-
       setIsEditing(false);
-      setProfileImageFile(null);
-      setPreviewUrl(null);
-    } catch (error) {
-      console.error('Error updating profile:', error);
+    },
+    onError: (error) => {
+      console.error("Error updating profile:", error);
       toast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
-    } finally {
-      setIsUploading(false);
+    },
+  });
+
+  const uploadImageMutation = useMutation({
+    mutationFn: (file: File) => uploadProfileImage(file, user!.id),
+    onSuccess: (imageUrl) => {
+      updateProfileMutation.mutate({ profile_image_url: imageUrl });
+    },
+    onError: (error) => {
+      console.error("Error uploading image:", error);
+      toast({
+        title: "Error",
+        description: "Failed to upload image. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 5MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+      uploadImageMutation.mutate(file);
     }
+  };
+
+  const handleEdit = () => {
+    setEditForm({
+      name: userProfile?.name || '',
+      bio: userProfile?.bio || ''
+    });
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    updateProfileMutation.mutate(editForm);
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setProfileImageFile(null);
-    setPreviewUrl(null);
-    if (profile) {
-      setEditForm({
-        name: profile.name || '',
-        bio: profile.bio || ''
-      });
-    }
+    setEditForm({ name: '', bio: '' });
   };
 
-  if (isLoading) {
+  if (profileLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navbar />
-        <div className="max-w-4xl mx-auto pt-24 px-4">
-          <div className="bg-white rounded-xl shadow-sm p-8 animate-pulse">
-            <div className="h-48 bg-gray-200 rounded-lg mb-8"></div>
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="w-32 h-32 bg-gray-200 rounded-full"></div>
-              <div className="space-y-2">
-                <div className="w-48 h-6 bg-gray-200 rounded"></div>
-                <div className="w-32 h-4 bg-gray-200 rounded"></div>
-              </div>
-            </div>
-          </div>
+        <div className="pt-20 flex justify-center items-center min-h-[50vh]">
+          <div className="text-gray-500">Loading profile...</div>
         </div>
       </div>
     );
@@ -151,161 +119,135 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
-      <main className="max-w-4xl mx-auto pt-24 px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-xl shadow-sm overflow-hidden"
-        >
-          {/* Cover Section */}
-          <div className="h-48 bg-gradient-to-r from-purple-600 to-blue-600 relative">
-            <div className="absolute inset-0 bg-black/20"></div>
-          </div>
-
-          {/* Profile Content */}
-          <div className="relative px-8 pb-8">
-            {/* Avatar */}
-            <div className="flex items-end justify-between -mt-16 mb-6">
-              <div className="relative">
-                <div className="relative w-32 h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-200">
-                  <Image
-                    src={previewUrl || profile?.profile_image_url || user?.imageUrl || "/placeholder.svg"}
-                    alt="Profile"
-                    width={128}
-                    height={128}
-                    className="w-full h-full object-cover"
-                  />
-                  {isEditing && (
-                    <label className="absolute inset-0 flex items-center justify-center bg-black/50 cursor-pointer group">
-                      <Camera className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageSelect}
-                        className="hidden"
-                      />
-                    </label>
-                  )}
+      <div className="pt-20 max-w-4xl mx-auto px-4 pb-8">
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Profile
+              {!isEditing && (
+                <Button onClick={handleEdit} variant="outline" size="sm">
+                  <Edit3 className="w-4 h-4 mr-2" />
+                  Edit
+                </Button>
+              )}
+              {isEditing && (
+                <div className="flex gap-2">
+                  <Button onClick={handleSave} size="sm" disabled={updateProfileMutation.isPending}>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save
+                  </Button>
+                  <Button onClick={handleCancel} variant="outline" size="sm">
+                    <X className="w-4 h-4 mr-2" />
+                    Cancel
+                  </Button>
                 </div>
+              )}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-start gap-6">
+              {/* Profile Image */}
+              <div className="relative">
+                <Avatar className="w-24 h-24">
+                  <AvatarImage 
+                    src={userProfile?.profile_image_url || user?.imageUrl} 
+                    alt={userProfile?.name || 'User'} 
+                  />
+                  <AvatarFallback className="text-2xl">
+                    {(userProfile?.name || user?.fullName || 'U').charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadImageMutation.isPending}
+                >
+                  <Camera className="w-4 h-4" />
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
               </div>
-              
-              <div className="flex space-x-3">
+
+              {/* Profile Info */}
+              <div className="flex-1 space-y-4">
                 {!isEditing ? (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    <Edit3 className="w-4 h-4" />
-                    <span>Edit Profile</span>
-                  </button>
-                ) : (
                   <>
-                    <button
-                      onClick={handleCancel}
-                      className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                      <span>Cancel</span>
-                    </button>
-                    <button
-                      onClick={handleSaveProfile}
-                      disabled={isUploading}
-                      className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
-                    >
-                      <Save className="w-4 h-4" />
-                      <span>{isUploading ? 'Saving...' : 'Save'}</span>
-                    </button>
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">
+                        {userProfile?.name || user?.fullName || 'Anonymous'}
+                      </h2>
+                      <p className="text-gray-600">{userProfile?.email || user?.primaryEmailAddress?.emailAddress}</p>
+                    </div>
+                    {userProfile?.bio && (
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-1">Bio</h3>
+                        <p className="text-gray-700">{userProfile.bio}</p>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <span>{userPosts.length} posts</span>
+                      {userProfile?.created_at && (
+                        <span>Joined {new Date(userProfile.created_at).toLocaleDateString()}</span>
+                      )}
+                    </div>
                   </>
+                ) : (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Name
+                      </label>
+                      <Input
+                        value={editForm.name}
+                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                        placeholder="Enter your name"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Bio
+                      </label>
+                      <Textarea
+                        value={editForm.bio}
+                        onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                        placeholder="Tell us about yourself..."
+                        rows={3}
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
+          </CardContent>
+        </Card>
 
-            {!isEditing ? (
-              /* Display Mode */
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {profile?.name || user?.fullName || 'Anonymous User'}
-                </h1>
-                <p className="text-gray-600 mb-4">{profile?.email || user?.emailAddresses[0]?.emailAddress}</p>
-                
-                {profile?.bio && (
-                  <p className="text-gray-800 leading-relaxed mb-6 bg-gray-50 p-4 rounded-lg">
-                    {profile.bio}
-                  </p>
-                )}
-
-                {/* Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                  <div className="text-center p-6 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
-                    <div className="text-2xl font-bold text-primary mb-2">
-                      <Calendar className="w-6 h-6 inline mr-2" />
-                      Member Since
-                    </div>
-                    <div className="text-gray-600">
-                      {new Date(user?.createdAt || profile?.created_at || Date.now()).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </div>
-                  </div>
-                  
-                  <div className="text-center p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600 mb-2">✨ Active User</div>
-                    <div className="text-gray-600">Contributing to the community</div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              /* Edit Mode */
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="space-y-6"
-              >
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={editForm.name}
-                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                    className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    placeholder="Enter your name"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bio
-                  </label>
-                  <textarea
-                    value={editForm.bio}
-                    onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                    rows={4}
-                    className="w-full p-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    placeholder="Tell us about yourself..."
-                    maxLength={500}
-                  />
-                  <div className="text-right text-sm text-gray-500 mt-1">
-                    {editForm.bio.length}/500
-                  </div>
-                </div>
-
-                {profileImageFile && (
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <p className="text-sm text-blue-700 mb-2">New profile picture selected:</p>
-                    <p className="text-xs text-blue-600">{profileImageFile.name}</p>
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </div>
-        </motion.div>
-      </main>
+        {/* User Posts */}
+        <div>
+          <h3 className="text-xl font-bold text-gray-900 mb-4">Your Posts</h3>
+          {postsLoading ? (
+            <div className="text-center py-8">
+              <div className="text-gray-500">Loading your posts...</div>
+            </div>
+          ) : userPosts.length > 0 ? (
+            <div className="space-y-6">
+              {userPosts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500">You haven't posted anything yet.</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
