@@ -55,13 +55,6 @@ export default function LandingPage() {
     },
   ];
 
-  const stats = [
-    { number: "10K+", label: "Active Users" },
-    { number: "50K+", label: "Posts Shared" },
-    { number: "100K+", label: "Connections Made" },
-    { number: "25+", label: "Countries" },
-  ];
-
   return (
     <div className="min-h-screen relative overflow-x-hidden">
       {/* Navigation */}
@@ -113,44 +106,54 @@ export default function LandingPage() {
             transition={{ delay: 0.2 }}
             className="flex items-center justify-center mb-6"
           >
-            <Sparkles className="w-8 h-8 text-yellow-400 mr-2" />
-            <span className="text-purple-600 font-semibold text-lg px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full border border-white/30">
-              Welcome to the Future of Social Connection
-            </span>
-            <Sparkles className="w-8 h-8 text-yellow-400 ml-2" />
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 to-blue-600/30 blur-xl rounded-full"></div>
+              <div className="relative flex items-center bg-white/90 backdrop-blur-md px-6 py-3 rounded-full border border-purple-200/50 shadow-lg">
+                <Sparkles className="w-6 h-6 text-purple-600 mr-2" />
+                <span className="text-purple-700 font-semibold text-lg">
+                  Revolutionizing Digital Connections
+                </span>
+                <Sparkles className="w-6 h-6 text-purple-600 ml-2" />
+              </div>
+            </div>
           </motion.div>
           
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-6xl md:text-8xl font-bold tracking-tight mb-6"
-            style={{
-              color: '#1f2937',
-              textShadow: '0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(255,255,255,0.6), 2px 2px 4px rgba(0,0,0,0.3)',
-              WebkitTextStroke: '1px rgba(255,255,255,0.5)'
-            }}
+            className="text-6xl md:text-8xl font-bold tracking-tight mb-6 relative"
           >
-            TapTalk
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent blur-sm scale-105"></div>
+            <div 
+              className="relative text-gray-900 font-extrabold"
+              style={{
+                textShadow: '0 0 30px rgba(255,255,255,0.9), 0 0 60px rgba(255,255,255,0.7), 3px 3px 6px rgba(0,0,0,0.8)',
+                WebkitTextStroke: '2px rgba(255,255,255,0.8)'
+              }}
+            >
+              TapTalk
+            </div>
           </motion.h1>
           
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="text-xl md:text-2xl text-center max-w-3xl leading-relaxed mb-10 mx-auto font-medium"
-            style={{
-              color: '#374151',
-              textShadow: '0 0 15px rgba(255,255,255,0.9), 1px 1px 3px rgba(0,0,0,0.4)',
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              backdropFilter: 'blur(10px)',
-              padding: '16px 24px',
-              borderRadius: '16px',
-              border: '1px solid rgba(255,255,255,0.2)'
-            }}
+            className="text-xl md:text-2xl text-center max-w-4xl leading-relaxed mb-10 mx-auto font-medium relative"
           >
-            Where thoughts take shape and conversations flow like liquid mercury through infinite connections. 
-            Experience the next generation of social interaction.
+            <div 
+              className="relative text-gray-800 font-semibold px-6 py-4 rounded-2xl"
+              style={{
+                textShadow: '0 0 20px rgba(255,255,255,0.95), 2px 2px 4px rgba(0,0,0,0.7)',
+                backgroundColor: 'rgba(255,255,255,0.85)',
+                backdropFilter: 'blur(15px)',
+                border: '2px solid rgba(255,255,255,0.6)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+              }}
+            >
+              Transform your social media experience with TapTalk - where authentic conversations flourish, meaningful connections are forged, and every interaction matters. Join a community that values genuine engagement over empty metrics.
+            </div>
           </motion.p>
           
           <motion.div
@@ -168,34 +171,6 @@ export default function LandingPage() {
             <button className="px-8 py-4 bg-white/20 backdrop-blur-sm text-gray-800 font-semibold rounded-xl border border-white/30 hover:bg-white/30 transition-all duration-300 text-lg">
               Watch Demo
             </button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 bg-white/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
-          >
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-gray-600 font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
           </motion.div>
         </div>
       </section>
