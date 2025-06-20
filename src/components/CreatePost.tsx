@@ -6,9 +6,11 @@ import { useUser } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { Camera, Send, X } from "lucide-react";
 import Image from "./Image";
+import { createPost, uploadImage } from "@/lib/api";
+import { toast } from "sonner";
 
 interface CreatePostProps {
-  onPostCreated: (post: any) => void;
+  onPostCreated: () => void;
 }
 
 export default function CreatePost({ onPostCreated }: CreatePostProps) {
@@ -37,30 +39,38 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text.trim()) return;
+    if (!text.trim() || !user) return;
 
     setIsLoading(true);
     try {
-      // Mock post creation for development
-      const newPost = {
-        id: Date.now().toString(),
-        text,
-        imageUrl: imagePreview,
-        clapCount: 0,
-        createdAt: new Date().toISOString(),
-        user: {
-          id: user?.id || "demo",
-          name: user?.fullName || "Demo User",
-          profilePicUrl: user?.imageUrl
-        }
-      };
+      let imageUrl: string | undefined;
 
-      onPostCreated(newPost);
+      // Upload image if present
+      if (imageFile) {
+        const fileName = `${user.id}_${Date.now()}_${imageFile.name}`;
+        imageUrl = await uploadImage(imageFile, fileName);
+      }
+
+      // Create post in database
+      await createPost({
+        content: text,
+        image_url: imageUrl,
+        clerk_user_id: user.id,
+        user_name: user.fullName || user.firstName || 'Anonymous',
+      });
+
+      // Reset form
       setText("");
       setImageFile(null);
       setImagePreview(null);
+      
+      // Notify parent component
+      onPostCreated();
+      
+      toast.success("Post created successfully!");
     } catch (error) {
       console.error("Error creating post:", error);
+      toast.error("Failed to create post. Please try again.");
     } finally {
       setIsLoading(false);
     }

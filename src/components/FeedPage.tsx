@@ -1,56 +1,74 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import PostCard from "@/components/PostCard";
 import CreatePost from "@/components/CreatePost";
 import { motion } from "framer-motion";
-
-interface Post {
-  id: string;
-  text: string;
-  imageUrl?: string;
-  clapCount: number;
-  createdAt: string;
-  user: {
-    id: string;
-    name: string;
-    profilePicUrl?: string;
-  };
-}
-
-// Mock data for development
-const mockPosts: Post[] = [
-  {
-    id: "1",
-    text: "Welcome to MicroSocial! This is a demo post to show how the platform works. Share your thoughts and connect with others!",
-    clapCount: 5,
-    createdAt: new Date().toISOString(),
-    user: {
-      id: "demo",
-      name: "Demo User",
-      profilePicUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-    }
-  }
-];
+import { fetchPosts, upsertUserProfile, updateClapCount, type Post } from "@/lib/api";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function FeedPage() {
-  const [posts, setPosts] = useState<Post[]>(mockPosts);
-  const [loading, setLoading] = useState(false);
   const { user } = useUser();
+  const queryClient = useQueryClient();
 
-  const handleNewPost = (newPost: Post) => {
-    setPosts([newPost, ...posts]);
+  // Fetch posts from database
+  const { data: posts = [], isLoading, error } = useQuery({
+    queryKey: ['posts'],
+    queryFn: fetchPosts,
+  });
+
+  // Sync user profile when user data is available
+  useEffect(() => {
+    if (user) {
+      upsertUserProfile({
+        clerk_user_id: user.id,
+        name: user.fullName || user.firstName || 'Anonymous',
+        email: user.primaryEmailAddress?.emailAddress || '',
+        profile_image_url: user.imageUrl,
+      }).catch(console.error);
+    }
+  }, [user]);
+
+  // Set up real-time subscription for posts
+  useEffect(() => {
+    const channel = supabase
+      .channel('posts-channel')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'posts'
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['posts'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
+  const handleNewPost = () => {
+    queryClient.invalidateQueries({ queryKey: ['posts'] });
   };
 
-  const handleClap = async (postId: string) => {
-    setPosts(posts.map(post => 
-      post.id === postId ? { ...post, clapCount: post.clapCount + 1 } : post
-    ));
+  const handleClap = async (postId: string, currentCount: number) => {
+    try {
+      await updateClapCount(postId, currentCount + 1);
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    } catch (error) {
+      console.error('Error updating clap count:', error);
+    }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navbar />
@@ -71,6 +89,19 @@ export default function FeedPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="max-w-2xl mx-auto pt-24 px-4">
+          <div className="text-center py-12">
+            <p className="text-red-600">Error loading posts. Please try again later.</p>
           </div>
         </div>
       </div>
@@ -113,7 +144,21 @@ export default function FeedPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <PostCard post={post} onClap={handleClap} />
+                <PostCard 
+                  post={{
+                    id: post.id,
+                    text: post.content,
+                    imageUrl: post.image_url,
+                    clapCount: post.clap_count,
+                    createdAt: post.created_at,
+                    user: {
+                      id: post.clerk_user_id,
+                      name: post.user_name,
+                      profilePicUrl: post.user_profiles?.profile_image_url,
+                    }
+                  }} 
+                  onClap={(postId) => handleClap(postId, post.clap_count)} 
+                />
               </motion.div>
             ))
           )}
