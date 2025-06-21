@@ -1,3 +1,4 @@
+
 "use client";
 
 import { SignInButton, SignUpButton } from "@clerk/clerk-react";
@@ -80,7 +81,6 @@ export default function LandingPage() {
               className="flex items-center space-x-6"
             >
               <a href="#features" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">Features</a>
-              <a href="#about" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">About</a>
               <Link to="/auth" className="px-4 py-2 text-gray-700 hover:text-purple-600 transition-colors font-medium">
                 Sign In
               </Link>
@@ -186,99 +186,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* About Section - Cleaned up and more classic */}
-      <section id="about" className="py-20 px-4 bg-gradient-to-br from-gray-50/40 via-gray-100/30 to-gray-50/40 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto relative">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-8">
-              About TapTalk
-            </h2>
-            
-            <div className="max-w-4xl mx-auto">
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 mb-12 border border-gray-200/50 shadow-lg"
-              >
-                <p className="text-xl leading-relaxed text-gray-700 mb-6">
-                  Welcome to TapTalk - a thoughtfully designed social platform where meaningful connections take center stage. 
-                  We've created a space that prioritizes genuine interactions over algorithmic noise.
-                </p>
-                <p className="text-lg leading-relaxed text-gray-600">
-                  Built with modern web technologies and a focus on user experience, TapTalk offers a clean, 
-                  intuitive interface for sharing thoughts, discovering content, and building lasting relationships 
-                  with people who share your interests and values.
-                </p>
-              </motion.div>
-            </div>
-          </motion.div>
-
-          {/* Core values section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="grid md:grid-cols-3 gap-8"
-          >
-            <div className="text-center p-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-200/40 shadow-lg hover:shadow-xl transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Users className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">Our Mission</h3>
-              <p className="text-gray-600 leading-relaxed">
-                To create a digital environment where authentic conversations flourish and users can express themselves 
-                freely while building meaningful connections with others.
-              </p>
-            </div>
-            
-            <div className="text-center p-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-200/40 shadow-lg hover:shadow-xl transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Heart className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">Our Values</h3>
-              <p className="text-gray-600 leading-relaxed">
-                We believe in transparency, user privacy, and fostering a positive community where every voice matters 
-                and respectful dialogue is encouraged.
-              </p>
-            </div>
-            
-            <div className="text-center p-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-200/40 shadow-lg hover:shadow-xl transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Zap className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">Our Promise</h3>
-              <p className="text-gray-600 leading-relaxed">
-                A commitment to maintaining a platform free from invasive advertising, data exploitation, 
-                and algorithmic manipulation of your social experience.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Company signature */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mt-16"
-          >
-            <div className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/30 inline-block">
-              <p className="text-lg text-gray-700 mb-3">
-                Crafted with dedication and attention to detail
-              </p>
-              <p className="text-sm text-gray-500">
-                "Building connections, one conversation at a time"
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 px-4 bg-gradient-to-br from-gray-50/20 to-gray-100/20">
         <div className="max-w-4xl mx-auto text-center">
@@ -354,7 +261,6 @@ export default function LandingPage() {
             <div>
               <h3 className="text-lg font-semibold mb-4 text-gray-800">Quick Links</h3>
               <ul className="space-y-2">
-                <li><a href="#about" className="text-gray-600 hover:text-gray-800 transition-colors">About Us</a></li>
                 <li><a href="#features" className="text-gray-600 hover:text-gray-800 transition-colors">Features</a></li>
                 <li><a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">Pricing</a></li>
                 <li><a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">Contact</a></li>
