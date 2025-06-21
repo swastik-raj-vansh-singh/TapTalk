@@ -22,13 +22,15 @@ export default function FeedPage() {
             email: user.primaryEmailAddress?.emailAddress || '',
             profile_image_url: user.imageUrl
           });
+          // Refresh user profile data after upserting
+          queryClient.invalidateQueries({ queryKey: ['userProfile', user.id] });
         } catch (error) {
           console.error("Error creating user profile:", error);
         }
       };
       createUserProfile();
     }
-  }, [user]);
+  }, [user, queryClient]);
 
   const { data: posts = [], isLoading, error } = useQuery({
     queryKey: ['posts'],

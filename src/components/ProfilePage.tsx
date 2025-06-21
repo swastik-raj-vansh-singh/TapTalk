@@ -1,3 +1,4 @@
+
 import { useUser } from "@clerk/clerk-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef } from "react";
@@ -20,9 +21,7 @@ export default function ProfilePage() {
   const [editForm, setEditForm] = useState({
     name: '',
     bio: '',
-    profile_image_url: ''
   });
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>('');
 
   const { data: userProfile, isLoading: profileLoading } = useQuery({
     queryKey: ['userProfile', user?.id],
@@ -43,13 +42,16 @@ export default function ProfilePage() {
     mutationFn: (updates: { name?: string; bio?: string; profile_image_url?: string }) =>
       updateUserProfile(user!.id, updates),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userProfile', user?.id] });
+      // Invalidate all related queries to refresh the data
+      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['userPosts'] });
+      
       toast({
         title: "Profile updated",
         description: "Your profile has been successfully updated.",
       });
       setIsEditing(false);
-      setUploadedImageUrl(''); // Clear temporary image URL
     },
     onError: (error) => {
       console.error("Error updating profile:", error);
@@ -65,13 +67,8 @@ export default function ProfilePage() {
     mutationFn: (file: File) => uploadProfileImage(file, user!.id),
     onSuccess: (imageUrl) => {
       console.log("Image uploaded successfully, URL:", imageUrl);
-      // Store the uploaded image URL temporarily instead of immediately updating profile
-      setUploadedImageUrl(imageUrl);
-      setEditForm(prev => ({ ...prev, profile_image_url: imageUrl }));
-      toast({
-        title: "Image uploaded",
-        description: "Click Save to update your profile picture.",
-      });
+      // Immediately update the profile with the new image URL
+      updateProfileMutation.mutate({ profile_image_url: imageUrl });
     },
     onError: (error) => {
       console.error("Error uploading image:", error);
@@ -104,30 +101,22 @@ export default function ProfilePage() {
     setEditForm({
       name: userProfile?.name || '',
       bio: userProfile?.bio || '',
-      profile_image_url: userProfile?.profile_image_url || ''
     });
-    setUploadedImageUrl(''); // Clear any temporary uploads
     setIsEditing(true);
   };
 
   const handleSave = () => {
-    const updates: { name?: string; bio?: string; profile_image_url?: string } = {
+    const updates: { name?: string; bio?: string } = {
       name: editForm.name,
       bio: editForm.bio
     };
-    
-    // Only include profile_image_url if a new image was uploaded
-    if (uploadedImageUrl) {
-      updates.profile_image_url = uploadedImageUrl;
-    }
     
     updateProfileMutation.mutate(updates);
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditForm({ name: '', bio: '', profile_image_url: '' });
-    setUploadedImageUrl(''); // Clear any temporary uploads
+    setEditForm({ name: '', bio: '' });
   };
 
   const handleClap = () => {
@@ -145,9 +134,6 @@ export default function ProfilePage() {
       </div>
     );
   }
-
-  // Get the current display image - use uploaded image if available, otherwise use profile image
-  const currentDisplayImage = uploadedImageUrl || userProfile?.profile_image_url || user?.imageUrl;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -183,24 +169,22 @@ export default function ProfilePage() {
               <div className="relative">
                 <Avatar className="w-24 h-24">
                   <AvatarImage 
-                    src={currentDisplayImage} 
+                    src={userProfile?.profile_image_url || user?.imageUrl} 
                     alt={userProfile?.name || 'User'} 
                   />
                   <AvatarFallback className="text-2xl">
                     {(userProfile?.name || user?.fullName || 'U').charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                {isEditing && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploadImageMutation.isPending}
-                  >
-                    <Camera className="w-4 h-4" />
-                  </Button>
-                )}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadImageMutation.isPending}
+                >
+                  <Camera className="w-4 h-4" />
+                </Button>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -261,11 +245,6 @@ export default function ProfilePage() {
                         rows={3}
                       />
                     </div>
-                    {uploadedImageUrl && (
-                      <div className="text-sm text-green-600">
-                        ✓ New profile picture uploaded. Click Save to apply changes.
-                      </div>
-                    )}
                   </div>
                 )}
               </div>

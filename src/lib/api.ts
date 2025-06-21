@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Post {
@@ -20,6 +21,15 @@ export interface UserProfile {
   profile_image_url?: string;
   bio?: string;
   created_at?: string;
+}
+
+export interface Comment {
+  id: string;
+  post_id: string;
+  clerk_user_id: string;
+  user_name: string;
+  content: string;
+  created_at: string;
 }
 
 // Create or update user profile
@@ -181,6 +191,49 @@ export const addClap = async (clerkUserId: string, postId: string) => {
   }
   
   console.log("Clap added successfully");
+  return data;
+};
+
+// Fetch comments for a post
+export const fetchComments = async (postId: string): Promise<Comment[]> => {
+  console.log("Fetching comments for post:", postId);
+  
+  const { data, error } = await supabase
+    .from('post_comments')
+    .select('*')
+    .eq('post_id', postId)
+    .order('created_at', { ascending: true });
+  
+  if (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+  
+  console.log("Comments fetched successfully:", data);
+  return data || [];
+};
+
+// Create a comment
+export const createComment = async (commentData: {
+  post_id: string;
+  clerk_user_id: string;
+  user_name: string;
+  content: string;
+}) => {
+  console.log("Creating comment with data:", commentData);
+  
+  const { data, error } = await supabase
+    .from('post_comments')
+    .insert(commentData)
+    .select()
+    .single();
+  
+  if (error) {
+    console.error("Error creating comment:", error);
+    throw error;
+  }
+  
+  console.log("Comment created successfully:", data);
   return data;
 };
 

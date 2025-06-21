@@ -5,10 +5,11 @@ import { useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import Image from "./Image";
 import { motion } from "framer-motion";
-import { Heart, MessageCircle, Share } from "lucide-react";
+import { Heart } from "lucide-react";
 import { addClap, hasUserClapped } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Post } from "@/lib/api";
+import CommentSection from "./CommentSection";
 
 interface PostCardProps {
   post: Post;
@@ -176,19 +177,10 @@ export default function PostCard({ post, onClap }: PostCardProps) {
               {userHasClapped ? "clapped" : "claps"}
             </span>
           </motion.button>
-
-          <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-1 text-gray-600 hover:text-primary transition-colors">
-              <MessageCircle className="w-5 h-5" />
-              <span className="text-sm">Comment</span>
-            </button>
-            
-            <button className="flex items-center space-x-1 text-gray-600 hover:text-primary transition-colors">
-              <Share className="w-5 h-5" />
-              <span className="text-sm">Share</span>
-            </button>
-          </div>
         </div>
+
+        {/* Comments Section */}
+        <CommentSection postId={post.id} />
       </div>
     </motion.div>
   );

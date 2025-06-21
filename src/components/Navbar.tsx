@@ -4,10 +4,19 @@
 import { UserButton, useUser } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Home, User, Plus } from "lucide-react";
+import { Home, User } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getUserProfile } from "@/lib/api";
 
 export default function Navbar() {
   const { user } = useUser();
+
+  // Fetch user profile to get updated name and profile picture
+  const { data: userProfile } = useQuery({
+    queryKey: ['userProfile', user?.id],
+    queryFn: () => user ? getUserProfile(user.id) : null,
+    enabled: !!user?.id,
+  });
 
   return (
     <motion.nav
