@@ -4,14 +4,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef } from "react";
 import { getUserProfile, updateUserProfile, uploadProfileImage, fetchPosts } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, Edit3, Save, X } from "lucide-react";
+import { Edit3, Save, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import Navbar from "./Navbar";
-import PostCard from "./PostCard";
+import ProfileHeader from "./profile/ProfileHeader";
+import ProfileEditForm from "./profile/ProfileEditForm";
+import UserPostsSection from "./profile/UserPostsSection";
 
 export default function ProfilePage() {
   const { user } = useUser();
@@ -44,9 +43,8 @@ export default function ProfilePage() {
     mutationFn: (updates: { name?: string; bio?: string; profile_image_url?: string }) =>
       updateUserProfile(user!.id, updates),
     onSuccess: (updatedProfile) => {
-      // Invalidate all relevant queries to refresh data across the app
       queryClient.invalidateQueries({ queryKey: ['userProfile', user?.id] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] }); // Refresh main feed
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
       queryClient.invalidateQueries({ queryKey: ['userPosts', user?.id] });
       
       toast({
@@ -55,8 +53,6 @@ export default function ProfilePage() {
       });
       setIsEditing(false);
       setUploadedImageUrl('');
-      
-      // Clear the edit form to ensure fresh data on next edit
       setEditForm({ name: '', bio: '', profile_image_url: '' });
     },
     onError: (error) => {
@@ -151,9 +147,6 @@ export default function ProfilePage() {
     );
   }
 
-  // Get the current display image - use uploaded image if available, otherwise use profile image
-  const currentDisplayImage = uploadedImageUrl || userProfile?.profile_image_url || user?.imageUrl;
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -183,118 +176,46 @@ export default function ProfilePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-start gap-6">
-              <div className="relative">
-                <Avatar className="w-24 h-24">
-                  <AvatarImage 
-                    src={uploadedImageUrl || userProfile?.profile_image_url || user?.imageUrl} 
-                    alt={userProfile?.name || 'User'} 
-                  />
-                  <AvatarFallback className="text-2xl">
-                    {(userProfile?.name || user?.fullName || 'U').charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                {isEditing && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploadImageMutation.isPending}
-                  >
-                    <Camera className="w-4 h-4" />
-                  </Button>
-                )}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
+            {!isEditing ? (
+              <ProfileHeader
+                userProfile={userProfile}
+                userPosts={userPosts}
+                isEditing={isEditing}
+                onEdit={handleEdit}
+                uploadedImageUrl={uploadedImageUrl}
+                onImageUpload={handleImageUpload}
+                uploadImageMutation={uploadImageMutation}
+                fileInputRef={fileInputRef}
+              />
+            ) : (
+              <div className="flex items-start gap-6">
+                <ProfileHeader
+                  userProfile={userProfile}
+                  userPosts={userPosts}
+                  isEditing={isEditing}
+                  onEdit={handleEdit}
+                  uploadedImageUrl={uploadedImageUrl}
+                  onImageUpload={handleImageUpload}
+                  uploadImageMutation={uploadImageMutation}
+                  fileInputRef={fileInputRef}
                 />
-                {uploadImageMutation.isPending && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-                    <div className="text-white text-xs">Uploading...</div>
-                  </div>
-                )}
+                <div className="flex-1">
+                  <ProfileEditForm
+                    editForm={editForm}
+                    setEditForm={setEditForm}
+                    uploadedImageUrl={uploadedImageUrl}
+                  />
+                </div>
               </div>
-
-              <div className="flex-1 space-y-4">
-                {!isEditing ? (
-                  <>
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-900">
-                        {userProfile?.name || user?.fullName || 'Anonymous'}
-                      </h2>
-                      <p className="text-gray-600">{userProfile?.email || user?.primaryEmailAddress?.emailAddress}</p>
-                    </div>
-                    {userProfile?.bio && (
-                      <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Bio</h3>
-                        <p className="text-gray-700">{userProfile.bio}</p>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span>{userPosts.length} posts</span>
-                      {userProfile?.created_at && (
-                        <span>Joined {new Date(userProfile.created_at).toLocaleDateString()}</span>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Name
-                      </label>
-                      <Input
-                        value={editForm.name}
-                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                        placeholder="Enter your name"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Bio
-                      </label>
-                      <Textarea
-                        value={editForm.bio}
-                        onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                        placeholder="Tell us about yourself..."
-                        rows={3}
-                      />
-                    </div>
-                    {uploadedImageUrl && (
-                      <div className="text-sm text-green-600">
-                        ✓ New profile picture uploaded. Click Save to apply changes.
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* User Posts */}
-        <div>
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Your Posts</h3>
-          {postsLoading ? (
-            <div className="text-center py-8">
-              <div className="text-gray-500">Loading your posts...</div>
-            </div>
-          ) : userPosts.length > 0 ? (
-            <div className="space-y-6">
-              {userPosts.map((post) => (
-                <PostCard key={post.id} post={post} onClap={handleClap} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-500">You haven't posted anything yet.</p>
-            </div>
-          )}
-        </div>
+        <UserPostsSection
+          userPosts={userPosts}
+          postsLoading={postsLoading}
+          onClap={handleClap}
+        />
       </div>
     </div>
   );
