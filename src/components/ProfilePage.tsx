@@ -1,220 +1,192 @@
+
 import { useUser } from "@clerk/clerk-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { getUserProfile, updateUserProfile, fetchPosts } from "@/lib/api";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit3, Save, X } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
+import { Edit2, Save, X, User, Mail, Calendar, MapPin } from "lucide-react";
+import { getUserProfile, updateUserProfile } from "@/lib/api";
+import { Iridescence } from "@/components/ui/iridescence";
 import Navbar from "./Navbar";
-import PostCard from "./PostCard";
 import Footer from "./Footer";
 
 export default function ProfilePage() {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({
-    name: '',
-    bio: '',
-  });
+  const [editedName, setEditedName] = useState("");
+  const [editedBio, setEditedBio] = useState("");
 
-  const { data: userProfile, isLoading: profileLoading } = useQuery({
+  const { data: userProfile, isLoading } = useQuery({
     queryKey: ['userProfile', user?.id],
     queryFn: () => user ? getUserProfile(user.id) : null,
     enabled: !!user?.id,
   });
 
-  const { data: userPosts = [], isLoading: postsLoading } = useQuery({
-    queryKey: ['userPosts', user?.id],
-    queryFn: async () => {
-      const allPosts = await fetchPosts();
-      return allPosts.filter(post => post.clerk_user_id === user?.id);
-    },
-    enabled: !!user?.id,
-  });
-
-  const updateProfileMutation = useMutation({
-    mutationFn: (updates: { name?: string; bio?: string }) =>
-      updateUserProfile(user!.id, updates),
-    onSuccess: () => {
-      // Invalidate all related queries to refresh the data
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['userPosts'] });
-      
-      toast({
-        title: "Profile updated",
-        description: "Your profile has been successfully updated.",
-      });
-      setIsEditing(false);
-    },
-    onError: (error) => {
-      console.error("Error updating profile:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
   const handleEdit = () => {
-    setEditForm({
-      name: userProfile?.name || '',
-      bio: userProfile?.bio || '',
-    });
+    setEditedName(userProfile?.name || user?.fullName || "");
+    setEditedBio(userProfile?.bio || "");
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    const updates: { name?: string; bio?: string } = {
-      name: editForm.name,
-      bio: editForm.bio
-    };
+  const handleSave = async () => {
+    if (!user?.id) return;
     
-    updateProfileMutation.mutate(updates);
+    try {
+      await updateUserProfile(user.id, {
+        name: editedName,
+        bio: editedBio,
+      });
+      
+      // Invalidate queries to refetch updated data
+      queryClient.invalidateQueries({ queryKey: ['userProfile', user.id] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditForm({ name: '', bio: '' });
+    setEditedName("");
+    setEditedBio("");
   };
 
-  const handleClap = () => {
-    // Refresh user posts to get updated clap counts
-    queryClient.invalidateQueries({ queryKey: ['userPosts', user?.id] });
-  };
-
-  if (profileLoading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen relative">
+        <Iridescence 
+          className="fixed inset-0 w-full h-full -z-10" 
+          color={[0.8, 0.9, 1.0]}
+          mouseReact={false} 
+          amplitude={0.05}
+          speed={0.5}
+        />
         <Navbar />
         <div className="pt-20 flex justify-center items-center min-h-[50vh]">
-          <div className="text-gray-500">Loading profile...</div>
+          <div className="text-gray-700 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-lg shadow-lg">Loading profile...</div>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <div className="pt-20 max-w-4xl mx-auto px-4 pb-8">
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Profile
-              {!isEditing && (
-                <Button onClick={handleEdit} variant="outline" size="sm">
-                  <Edit3 className="w-4 h-4 mr-2" />
-                  Edit
-                </Button>
-              )}
-              {isEditing && (
-                <div className="flex gap-2">
-                  <Button onClick={handleSave} size="sm" disabled={updateProfileMutation.isPending}>
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </Button>
-                  <Button onClick={handleCancel} variant="outline" size="sm">
-                    <X className="w-4 h-4 mr-2" />
-                    Cancel
-                  </Button>
-                </div>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-start gap-6">
-              {/* Profile Image - Display only, no edit functionality */}
-              <div className="relative">
-                <Avatar className="w-24 h-24">
-                  <AvatarImage 
-                    src={userProfile?.profile_image_url || user?.imageUrl} 
-                    alt={userProfile?.name || 'User'} 
-                  />
-                  <AvatarFallback className="text-2xl">
-                    {(userProfile?.name || user?.fullName || 'U').charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
+  const displayName = userProfile?.name || user?.fullName || user?.username || "Anonymous";
+  const displayBio = userProfile?.bio || "No bio yet";
+  const joinedDate = user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown";
 
-              {/* Profile Info */}
-              <div className="flex-1 space-y-4">
-                {!isEditing ? (
-                  <>
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-900">
-                        {userProfile?.name || user?.fullName || 'Anonymous'}
-                      </h2>
-                      <p className="text-gray-600">{userProfile?.email || user?.primaryEmailAddress?.emailAddress}</p>
-                    </div>
-                    {userProfile?.bio && (
-                      <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">Bio</h3>
-                        <p className="text-gray-700">{userProfile.bio}</p>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span>{userPosts.length} posts</span>
-                      {userProfile?.created_at && (
-                        <span>Joined {new Date(userProfile.created_at).toLocaleDateString()}</span>
-                      )}
-                    </div>
-                  </>
+  return (
+    <div className="min-h-screen relative">
+      {/* Iridescence Background */}
+      <Iridescence 
+        className="fixed inset-0 w-full h-full -z-10" 
+        color={[0.8, 0.9, 1.0]}
+        mouseReact={false} 
+        amplitude={0.05}
+        speed={0.5}
+      />
+      
+      <Navbar />
+      <div className="pt-20 max-w-2xl mx-auto px-4 pb-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/20"
+        >
+          {/* Profile Header */}
+          <div className="flex items-start justify-between mb-8">
+            <div className="flex items-center space-x-6">
+              <div className="relative">
+                <img
+                  src={user?.imageUrl || "/placeholder.svg"}
+                  alt={displayName}
+                  className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
+                />
+              </div>
+              <div className="flex-1">
+                {isEditing ? (
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      value={editedName}
+                      onChange={(e) => setEditedName(e.target.value)}
+                      className="text-2xl font-bold bg-white/70 border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Your name"
+                    />
+                    <textarea
+                      value={editedBio}
+                      onChange={(e) => setEditedBio(e.target.value)}
+                      className="w-full bg-white/70 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                      rows={3}
+                      placeholder="Tell us about yourself..."
+                    />
+                  </div>
                 ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Name
-                      </label>
-                      <Input
-                        value={editForm.name}
-                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                        placeholder="Enter your name"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Bio
-                      </label>
-                      <Textarea
-                        value={editForm.bio}
-                        onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                        placeholder="Tell us about yourself..."
-                        rows={3}
-                      />
-                    </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">{displayName}</h1>
+                    <p className="text-gray-600 leading-relaxed">{displayBio}</p>
                   </div>
                 )}
               </div>
             </div>
-          </CardContent>
-        </Card>
+            
+            {/* Edit Controls */}
+            <div className="flex space-x-2">
+              {isEditing ? (
+                <>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleSave}
+                    className="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>Save</span>
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleCancel}
+                    className="flex items-center space-x-2 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg"
+                  >
+                    <X className="w-4 h-4" />
+                    <span>Cancel</span>
+                  </motion.button>
+                </>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleEdit}
+                  className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg"
+                >
+                  <Edit2 className="w-4 h-4" />
+                  <span>Edit Profile</span>
+                </motion.button>
+              )}
+            </div>
+          </div>
 
-        {/* User Posts */}
-        <div>
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Your Posts</h3>
-          {postsLoading ? (
-            <div className="text-center py-8">
-              <div className="text-gray-500">Loading your posts...</div>
+          {/* Profile Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-center space-x-3 text-gray-600">
+              <Mail className="w-5 h-5" />
+              <span>{user?.primaryEmailAddress?.emailAddress}</span>
             </div>
-          ) : userPosts.length > 0 ? (
-            <div className="space-y-6">
-              {userPosts.map((post) => (
-                <PostCard key={post.id} post={post} onClap={handleClap} />
-              ))}
+            <div className="flex items-center space-x-3 text-gray-600">
+              <Calendar className="w-5 h-5" />
+              <span>Joined {joinedDate}</span>
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-500">You haven't posted anything yet.</p>
+            <div className="flex items-center space-x-3 text-gray-600">
+              <User className="w-5 h-5" />
+              <span>@{user?.username}</span>
             </div>
-          )}
-        </div>
+            <div className="flex items-center space-x-3 text-gray-600">
+              <MapPin className="w-5 h-5" />
+              <span>TapTalk Community</span>
+            </div>
+          </div>
+        </motion.div>
       </div>
       <Footer />
     </div>

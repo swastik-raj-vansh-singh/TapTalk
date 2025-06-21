@@ -3,6 +3,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { fetchPosts, upsertUserProfile } from "@/lib/api";
+import { Iridescence } from "@/components/ui/iridescence";
 import Navbar from "./Navbar";
 import CreatePost from "./CreatePost";
 import PostCard from "./PostCard";
@@ -46,10 +47,17 @@ export default function FeedPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen relative">
+        <Iridescence 
+          className="fixed inset-0 w-full h-full -z-10" 
+          color={[0.8, 0.9, 1.0]}
+          mouseReact={false} 
+          amplitude={0.05}
+          speed={0.5}
+        />
         <Navbar />
         <div className="pt-20 flex justify-center items-center min-h-[50vh]">
-          <div className="text-gray-500">Loading posts...</div>
+          <div className="text-gray-700 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-lg shadow-lg">Loading posts...</div>
         </div>
       </div>
     );
@@ -57,19 +65,35 @@ export default function FeedPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen relative">
+        <Iridescence 
+          className="fixed inset-0 w-full h-full -z-10" 
+          color={[0.8, 0.9, 1.0]}
+          mouseReact={false} 
+          amplitude={0.05}
+          speed={0.5}
+        />
         <Navbar />
         <div className="pt-20 flex justify-center items-center min-h-[50vh]">
-          <div className="text-red-500">Error loading posts. Please try again.</div>
+          <div className="text-red-600 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-lg shadow-lg">Error loading posts. Please try again.</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen relative">
+      {/* Iridescence Background */}
+      <Iridescence 
+        className="fixed inset-0 w-full h-full -z-10" 
+        color={[0.8, 0.9, 1.0]}
+        mouseReact={false} 
+        amplitude={0.05}
+        speed={0.5}
+      />
+      
       <Navbar />
-      <div className="pt-20 max-w-2xl mx-auto px-4 pb-8">
+      <div className="pt-20 max-w-2xl mx-auto px-4 pb-8 relative z-10">
         <CreatePost onPostCreated={() => queryClient.invalidateQueries({ queryKey: ['posts'] })} />
         
         <div className="space-y-6 mt-6">
@@ -79,7 +103,7 @@ export default function FeedPage() {
           
           {posts.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No posts yet. Be the first to share something!</p>
+              <p className="text-gray-700 text-lg bg-white/80 backdrop-blur-sm px-6 py-4 rounded-lg shadow-lg inline-block">No posts yet. Be the first to share something!</p>
             </div>
           )}
         </div>

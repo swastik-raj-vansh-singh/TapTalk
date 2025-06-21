@@ -16,13 +16,17 @@ export default function Navbar() {
     queryKey: ['userProfile', user?.id],
     queryFn: () => user ? getUserProfile(user.id) : null,
     enabled: !!user?.id,
+    refetchInterval: 5000, // Refresh every 5 seconds to catch updates
   });
+
+  console.log("Current user profile in navbar:", userProfile);
+  console.log("Current user from Clerk:", user);
 
   return (
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-lg"
+      className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-white/20 shadow-lg"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -40,7 +44,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-8">
             <Link
               to="/feed"
-              className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors font-medium"
             >
               <Home className="w-5 h-5" />
               <span className="hidden sm:block">Feed</span>
@@ -48,7 +52,7 @@ export default function Navbar() {
             
             <Link
               to="/profile"
-              className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
+              className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors font-medium"
             >
               <User className="w-5 h-5" />
               <span className="hidden sm:block">Profile</span>
