@@ -1,4 +1,3 @@
-
 "use client";
 
 import { SignInButton, SignUpButton } from "@clerk/clerk-react";
@@ -187,13 +186,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* About Section - Made Beautiful and Cute */}
-      <section id="about" className="py-20 px-4 bg-gradient-to-br from-pink-50/40 via-purple-50/30 to-blue-50/40 relative overflow-hidden">
-        {/* Decorative Background Elements */}
-        <div className="absolute top-10 left-10 w-20 h-20 bg-pink-200/30 rounded-full blur-xl"></div>
-        <div className="absolute top-32 right-20 w-32 h-32 bg-purple-200/20 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-blue-200/25 rounded-full blur-xl"></div>
-        
+      {/* About Section - Cleaned up and more classic */}
+      <section id="about" className="py-20 px-4 bg-gradient-to-br from-gray-50/40 via-gray-100/30 to-gray-50/40 relative overflow-hidden">
         <div className="max-w-6xl mx-auto relative">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -201,116 +195,84 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            {/* Cute header with emojis */}
-            <div className="flex justify-center items-center mb-6">
-              <span className="text-4xl mr-3">✨</span>
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-                About TapTalk
-              </h2>
-              <span className="text-4xl ml-3">💫</span>
-            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-8">
+              About TapTalk
+            </h2>
             
-            {/* Personal story approach */}
             <div className="max-w-4xl mx-auto">
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 mb-8 border border-pink-100/50 shadow-lg"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 mb-12 border border-gray-200/50 shadow-lg"
               >
-                <p className="text-xl leading-relaxed text-gray-700 mb-4">
-                  Hey there! 👋 Welcome to TapTalk - a little corner of the internet where I wanted to create something 
-                  special for people like you and me who crave <span className="font-semibold text-purple-600">genuine connections</span>.
+                <p className="text-xl leading-relaxed text-gray-700 mb-6">
+                  Welcome to TapTalk - a thoughtfully designed social platform where meaningful connections take center stage. 
+                  We've created a space that prioritizes genuine interactions over algorithmic noise.
                 </p>
                 <p className="text-lg leading-relaxed text-gray-600">
-                  Born from late-night coding sessions and a dream to make social media feel more... well, social again! 
-                  No algorithms pushing ads, no fake engagement - just real people sharing real moments. 
-                  <span className="text-pink-500"> Pretty cool, right?</span> 😊
+                  Built with modern web technologies and a focus on user experience, TapTalk offers a clean, 
+                  intuitive interface for sharing thoughts, discovering content, and building lasting relationships 
+                  with people who share your interests and values.
                 </p>
-              </motion.div>
-
-              {/* Fun stats or highlights */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
-              >
-                <div className="bg-gradient-to-br from-pink-100/80 to-rose-100/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-pink-200/30">
-                  <div className="text-3xl mb-2">🎨</div>
-                  <h3 className="font-semibold text-pink-700 mb-1">Creative Expression</h3>
-                  <p className="text-sm text-pink-600">Share your world through photos, thoughts, and moments that matter to you</p>
-                </div>
-                <div className="bg-gradient-to-br from-purple-100/80 to-indigo-100/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-purple-200/30">
-                  <div className="text-3xl mb-2">💝</div>
-                  <h3 className="font-semibold text-purple-700 mb-1">Meaningful Connections</h3>
-                  <p className="text-sm text-purple-600">Build friendships that go beyond likes and follows</p>
-                </div>
-                <div className="bg-gradient-to-br from-blue-100/80 to-cyan-100/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-blue-200/30">
-                  <div className="text-3xl mb-2">🌟</div>
-                  <h3 className="font-semibold text-blue-700 mb-1">Positive Vibes</h3>
-                  <p className="text-sm text-blue-600">A safe space where kindness and creativity flourish</p>
-                </div>
               </motion.div>
             </div>
           </motion.div>
 
-          {/* Personal touch section */}
+          {/* Core values section */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="grid md:grid-cols-3 gap-8"
           >
-            <div className="text-center p-8 bg-white/40 backdrop-blur-sm rounded-3xl border border-yellow-200/40 shadow-lg hover:shadow-xl transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Smile className="w-8 h-8 text-white" />
+            <div className="text-center p-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-200/40 shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Users className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">Our Heart ❤️</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">Our Mission</h3>
               <p className="text-gray-600 leading-relaxed">
-                We believe social media should bring joy, not stress. Every feature is designed with love, 
-                focusing on what really matters - <em>you and your connections</em>.
+                To create a digital environment where authentic conversations flourish and users can express themselves 
+                freely while building meaningful connections with others.
               </p>
             </div>
             
-            <div className="text-center p-8 bg-white/40 backdrop-blur-sm rounded-3xl border border-green-200/40 shadow-lg hover:shadow-xl transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Camera className="w-8 h-8 text-white" />
+            <div className="text-center p-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-200/40 shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Heart className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">Our Vision 🌈</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">Our Values</h3>
               <p className="text-gray-600 leading-relaxed">
-                To create a digital space where every post tells a story, every interaction spreads positivity, 
-                and every user feels heard and valued.
+                We believe in transparency, user privacy, and fostering a positive community where every voice matters 
+                and respectful dialogue is encouraged.
               </p>
             </div>
             
-            <div className="text-center p-8 bg-white/40 backdrop-blur-sm rounded-3xl border border-indigo-200/40 shadow-lg hover:shadow-xl transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-indigo-400 to-purple-400 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Music className="w-8 h-8 text-white" />
+            <div className="text-center p-8 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-200/40 shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Zap className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">Our Promise 🤝</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">Our Promise</h3>
               <p className="text-gray-600 leading-relaxed">
-                No data mining, no invasive ads, no algorithm manipulation. Just a pure, 
-                delightful experience crafted with care for amazing people like you!
+                A commitment to maintaining a platform free from invasive advertising, data exploitation, 
+                and algorithmic manipulation of your social experience.
               </p>
             </div>
           </motion.div>
 
-          {/* Personal signature */}
+          {/* Company signature */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-center mt-16"
           >
-            <div className="bg-gradient-to-r from-pink-50/80 to-purple-50/80 backdrop-blur-sm rounded-2xl p-8 border border-pink-200/30 inline-block">
+            <div className="bg-gradient-to-r from-gray-50/80 to-gray-100/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/30 inline-block">
               <p className="text-lg text-gray-700 mb-3">
-                Made with lots of <Coffee className="w-5 h-5 inline text-amber-600 mx-1" />, 
-                endless <Heart className="w-5 h-5 inline text-red-500 fill-current mx-1" />, 
-                and a sprinkle of magic ✨
+                Crafted with dedication and attention to detail
               </p>
               <p className="text-sm text-gray-500">
-                <em>"Building connections, one tap at a time"</em> 💫
+                "Building connections, one conversation at a time"
               </p>
             </div>
           </motion.div>
