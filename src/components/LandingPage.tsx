@@ -70,7 +70,7 @@ export default function LandingPage() {
               <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
                 <MessageCircle className="w-5 h-5 text-white" />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                 TapTalk
               </span>
             </motion.div>
@@ -78,13 +78,13 @@ export default function LandingPage() {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center space-x-6"
+              className="flex items-center space-x-2 sm:space-x-6"
             >
-              <a href="#features" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">Features</a>
-              <Link to="/auth" className="px-4 py-2 text-gray-700 hover:text-purple-600 transition-colors font-medium">
+              <a href="#features" className="hidden sm:block text-gray-700 hover:text-purple-600 transition-colors font-medium">Features</a>
+              <Link to="/auth" className="px-3 sm:px-4 py-2 text-gray-700 hover:text-purple-600 transition-colors font-medium text-sm sm:text-base">
                 Sign In
               </Link>
-              <Link to="/auth" className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
+              <Link to="/auth" className="px-3 sm:px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium text-sm sm:text-base">
                 Get Started
               </Link>
             </motion.div>
