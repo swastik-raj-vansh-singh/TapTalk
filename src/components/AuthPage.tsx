@@ -39,7 +39,8 @@ export default function AuthPage() {
                       headerSubtitle: "hidden",
                     }
                   }}
-                  redirectUrl="/feed"
+                  fallbackRedirectUrl="/feed"
+                  forceRedirectUrl="/feed"
                 />
               </div>
             </TabsContent>
@@ -55,7 +56,8 @@ export default function AuthPage() {
                       headerSubtitle: "hidden",
                     }
                   }}
-                  redirectUrl="/feed"
+                  fallbackRedirectUrl="/feed"
+                  forceRedirectUrl="/feed"
                 />
               </div>
             </TabsContent>
