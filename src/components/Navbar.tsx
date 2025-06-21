@@ -1,86 +1,61 @@
 
-import { useUser, UserButton } from "@clerk/clerk-react";
-import { useQuery } from "@tanstack/react-query";
-import { Link, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { getUserProfile } from "@/lib/api";
+"use client";
+
+import { UserButton, useUser } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Home, User, Plus } from "lucide-react";
 
 export default function Navbar() {
-  const { user, isSignedIn } = useUser();
-  const location = useLocation();
-
-  // Fetch user profile to get updated name
-  const { data: userProfile } = useQuery({
-    queryKey: ['userProfile', user?.id],
-    queryFn: () => user ? getUserProfile(user.id) : null,
-    enabled: !!user?.id && isSignedIn,
-  });
-
-  const isActive = (path: string) => location.pathname === path;
+  const { user } = useUser();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.nav
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm"
+    >
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-8">
-            <Link to="/" className="text-xl font-bold text-primary">
-              SocialApp
+          {/* Logo */}
+          <Link to="/feed" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xl">T</span>
+            </div>
+            <span className="text-xl font-bold text-gray-800">TapTalk</span>
+          </Link>
+
+          {/* Navigation Items */}
+          <div className="flex items-center space-x-6">
+            <Link
+              to="/feed"
+              className="flex items-center space-x-1 text-gray-600 hover:text-primary transition-colors"
+            >
+              <Home className="w-5 h-5" />
+              <span className="hidden sm:block">Feed</span>
             </Link>
             
-            {isSignedIn && (
-              <div className="hidden md:flex space-x-6">
-                <Link 
-                  to="/feed" 
-                  className={`font-medium transition-colors ${
-                    isActive('/feed') 
-                      ? 'text-primary border-b-2 border-primary pb-2' 
-                      : 'text-gray-600 hover:text-primary'
-                  }`}
-                >
-                  Feed
-                </Link>
-                <Link 
-                  to="/profile" 
-                  className={`font-medium transition-colors ${
-                    isActive('/profile') 
-                      ? 'text-primary border-b-2 border-primary pb-2' 
-                      : 'text-gray-600 hover:text-primary'
-                  }`}
-                >
-                  Profile
-                </Link>
-              </div>
-            )}
-          </div>
+            <Link
+              to="/profile"
+              className="flex items-center space-x-1 text-gray-600 hover:text-primary transition-colors"
+            >
+              <User className="w-5 h-5" />
+              <span className="hidden sm:block">Profile</span>
+            </Link>
 
-          <div className="flex items-center space-x-4">
-            {isSignedIn ? (
-              <div className="flex items-center space-x-3">
-                <span className="text-sm font-medium text-gray-700">
-                  Welcome, {userProfile?.name || user?.fullName || "User"}!
-                </span>
-                <UserButton 
-                  afterSignOutUrl="/"
-                  appearance={{
-                    elements: {
-                      avatarBox: "w-8 h-8"
-                    }
-                  }}
-                />
-              </div>
-            ) : (
-              <div className="flex items-center space-x-3">
-                <Link to="/auth">
-                  <Button variant="outline">Sign In</Button>
-                </Link>
-                <Link to="/auth">
-                  <Button>Get Started</Button>
-                </Link>
-              </div>
-            )}
+            {/* User Button */}
+            <div className="flex items-center">
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8",
+                  },
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }

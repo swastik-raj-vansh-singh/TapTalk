@@ -1,16 +1,18 @@
 
+
 import { useUser } from "@clerk/clerk-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef } from "react";
 import { getUserProfile, updateUserProfile, uploadProfileImage, fetchPosts } from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit3, Save, X } from "lucide-react";
+import { Camera, Edit3, Save, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import Navbar from "./Navbar";
-import ProfileHeader from "./profile/ProfileHeader";
-import ProfileEditForm from "./profile/ProfileEditForm";
-import UserPostsSection from "./profile/UserPostsSection";
+import PostCard from "./PostCard";
 
 export default function ProfilePage() {
   const { user } = useUser();
@@ -19,10 +21,8 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
-    bio: '',
-    profile_image_url: ''
+    bio: ''
   });
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>('');
 
   const { data: userProfile, isLoading: profileLoading } = useQuery({
     queryKey: ['userProfile', user?.id],
@@ -42,18 +42,13 @@ export default function ProfilePage() {
   const updateProfileMutation = useMutation({
     mutationFn: (updates: { name?: string; bio?: string; profile_image_url?: string }) =>
       updateUserProfile(user!.id, updates),
-    onSuccess: (updatedProfile) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userProfile', user?.id] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['userPosts', user?.id] });
-      
       toast({
         title: "Profile updated",
         description: "Your profile has been successfully updated.",
       });
       setIsEditing(false);
-      setUploadedImageUrl('');
-      setEditForm({ name: '', bio: '', profile_image_url: '' });
     },
     onError: (error) => {
       console.error("Error updating profile:", error);
@@ -69,12 +64,7 @@ export default function ProfilePage() {
     mutationFn: (file: File) => uploadProfileImage(file, user!.id),
     onSuccess: (imageUrl) => {
       console.log("Image uploaded successfully, URL:", imageUrl);
-      setUploadedImageUrl(imageUrl);
-      setEditForm(prev => ({ ...prev, profile_image_url: imageUrl }));
-      toast({
-        title: "Image uploaded",
-        description: "Click Save to update your profile picture.",
-      });
+      updateProfileMutation.mutate({ profile_image_url: imageUrl });
     },
     onError: (error) => {
       console.error("Error uploading image:", error);
@@ -106,33 +96,22 @@ export default function ProfilePage() {
   const handleEdit = () => {
     setEditForm({
       name: userProfile?.name || '',
-      bio: userProfile?.bio || '',
-      profile_image_url: userProfile?.profile_image_url || ''
+      bio: userProfile?.bio || ''
     });
-    setUploadedImageUrl('');
     setIsEditing(true);
   };
 
   const handleSave = () => {
-    const updates: { name?: string; bio?: string; profile_image_url?: string } = {
-      name: editForm.name,
-      bio: editForm.bio
-    };
-    
-    if (uploadedImageUrl) {
-      updates.profile_image_url = uploadedImageUrl;
-    }
-    
-    updateProfileMutation.mutate(updates);
+    updateProfileMutation.mutate(editForm);
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditForm({ name: '', bio: '', profile_image_url: '' });
-    setUploadedImageUrl('');
+    setEditForm({ name: '', bio: '' });
   };
 
   const handleClap = () => {
+    // Refresh user posts to get updated clap counts
     queryClient.invalidateQueries({ queryKey: ['userPosts', user?.id] });
   };
 
@@ -176,46 +155,113 @@ export default function ProfilePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {!isEditing ? (
-              <ProfileHeader
-                userProfile={userProfile}
-                userPosts={userPosts}
-                isEditing={isEditing}
-                onEdit={handleEdit}
-                uploadedImageUrl={uploadedImageUrl}
-                onImageUpload={handleImageUpload}
-                uploadImageMutation={uploadImageMutation}
-                fileInputRef={fileInputRef}
-              />
-            ) : (
-              <div className="flex items-start gap-6">
-                <ProfileHeader
-                  userProfile={userProfile}
-                  userPosts={userPosts}
-                  isEditing={isEditing}
-                  onEdit={handleEdit}
-                  uploadedImageUrl={uploadedImageUrl}
-                  onImageUpload={handleImageUpload}
-                  uploadImageMutation={uploadImageMutation}
-                  fileInputRef={fileInputRef}
-                />
-                <div className="flex-1">
-                  <ProfileEditForm
-                    editForm={editForm}
-                    setEditForm={setEditForm}
-                    uploadedImageUrl={uploadedImageUrl}
+            <div className="flex items-start gap-6">
+              {/* Profile Image */}
+              <div className="relative">
+                <Avatar className="w-24 h-24">
+                  <AvatarImage 
+                    src={userProfile?.profile_image_url || user?.imageUrl} 
+                    alt={userProfile?.name || 'User'} 
                   />
-                </div>
+                  <AvatarFallback className="text-2xl">
+                    {(userProfile?.name || user?.fullName || 'U').charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadImageMutation.isPending}
+                >
+                  <Camera className="w-4 h-4" />
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                {uploadImageMutation.isPending && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                    <div className="text-white text-xs">Uploading...</div>
+                  </div>
+                )}
               </div>
-            )}
+
+              {/* Profile Info */}
+              <div className="flex-1 space-y-4">
+                {!isEditing ? (
+                  <>
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">
+                        {userProfile?.name || user?.fullName || 'Anonymous'}
+                      </h2>
+                      <p className="text-gray-600">{userProfile?.email || user?.primaryEmailAddress?.emailAddress}</p>
+                    </div>
+                    {userProfile?.bio && (
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-1">Bio</h3>
+                        <p className="text-gray-700">{userProfile.bio}</p>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <span>{userPosts.length} posts</span>
+                      {userProfile?.created_at && (
+                        <span>Joined {new Date(userProfile.created_at).toLocaleDateString()}</span>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Name
+                      </label>
+                      <Input
+                        value={editForm.name}
+                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                        placeholder="Enter your name"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Bio
+                      </label>
+                      <Textarea
+                        value={editForm.bio}
+                        onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                        placeholder="Tell us about yourself..."
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <UserPostsSection
-          userPosts={userPosts}
-          postsLoading={postsLoading}
-          onClap={handleClap}
-        />
+        {/* User Posts */}
+        <div>
+          <h3 className="text-xl font-bold text-gray-900 mb-4">Your Posts</h3>
+          {postsLoading ? (
+            <div className="text-center py-8">
+              <div className="text-gray-500">Loading your posts...</div>
+            </div>
+          ) : userPosts.length > 0 ? (
+            <div className="space-y-6">
+              {userPosts.map((post) => (
+                <PostCard key={post.id} post={post} onClap={handleClap} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500">You haven't posted anything yet.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

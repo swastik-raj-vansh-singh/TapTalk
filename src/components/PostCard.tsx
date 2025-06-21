@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,7 +9,6 @@ import { Heart, MessageCircle, Share } from "lucide-react";
 import { addClap, hasUserClapped } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Post } from "@/lib/api";
-import CommentSection from "./CommentSection";
 
 interface PostCardProps {
   post: Post;
@@ -20,26 +20,6 @@ export default function PostCard({ post, onClap }: PostCardProps) {
   const [localClapCount, setLocalClapCount] = useState(post.clap_count);
   const [userHasClapped, setUserHasClapped] = useState(false);
   const [checkingClapStatus, setCheckingClapStatus] = useState(true);
-  const [showComments, setShowComments] = useState(false);
-  const [comments, setComments] = useState([
-    // Mock comments for demo - in real app this would come from API
-    {
-      id: "1",
-      content: "Great post! Really enjoyed reading this.",
-      user_name: "Alice Johnson",
-      user_profile_image_url: "/placeholder.svg",
-      created_at: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
-      like_count: 2
-    },
-    {
-      id: "2", 
-      content: "Thanks for sharing your thoughts on this topic.",
-      user_name: "Bob Smith",
-      user_profile_image_url: "/placeholder.svg",
-      created_at: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
-      like_count: 1
-    }
-  ]);
   const { user } = useUser();
   const { toast } = useToast();
 
@@ -123,27 +103,6 @@ export default function PostCard({ post, onClap }: PostCardProps) {
     return `${Math.floor(diffInMinutes / 1440)}d ago`;
   };
 
-  const handleAddComment = async (postId: string, content: string) => {
-    if (!user) return;
-    
-    // Mock adding comment - in real app this would be an API call
-    const newComment = {
-      id: Date.now().toString(),
-      content,
-      user_name: user.fullName || "Anonymous",
-      user_profile_image_url: user.imageUrl,
-      created_at: new Date().toISOString(),
-      like_count: 0
-    };
-    
-    setComments(prev => [newComment, ...prev]);
-    
-    toast({
-      title: "Comment added",
-      description: "Your comment has been posted successfully."
-    });
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -219,12 +178,9 @@ export default function PostCard({ post, onClap }: PostCardProps) {
           </motion.button>
 
           <div className="flex items-center space-x-4">
-            <button 
-              className="flex items-center space-x-1 text-gray-600 hover:text-blue-600 transition-colors"
-              onClick={() => setShowComments(!showComments)}
-            >
+            <button className="flex items-center space-x-1 text-gray-600 hover:text-primary transition-colors">
               <MessageCircle className="w-5 h-5" />
-              <span className="text-sm">{comments.length} Comments</span>
+              <span className="text-sm">Comment</span>
             </button>
             
             <button className="flex items-center space-x-1 text-gray-600 hover:text-primary transition-colors">
@@ -233,15 +189,6 @@ export default function PostCard({ post, onClap }: PostCardProps) {
             </button>
           </div>
         </div>
-
-        {/* Comments Section */}
-        {showComments && (
-          <CommentSection
-            postId={post.id}
-            comments={comments}
-            onAddComment={handleAddComment}
-          />
-        )}
       </div>
     </motion.div>
   );
