@@ -19,10 +19,10 @@ export default function CommentSection({ postId }: CommentSectionProps) {
   const { user } = useUser();
   const queryClient = useQueryClient();
 
+  // Always fetch comments to get the correct count
   const { data: comments = [], isLoading } = useQuery({
     queryKey: ['comments', postId],
     queryFn: () => fetchComments(postId),
-    enabled: showComments,
   });
 
   const createCommentMutation = useMutation({
