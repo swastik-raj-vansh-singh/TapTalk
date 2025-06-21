@@ -150,4 +150,5 @@ This app is designed to be deployed on Vercel:
 - Beautiful gradient backgrounds
 - Consistent design system
 
+Feel free to contact me for any query
 Built with ❤️ for modern web development
