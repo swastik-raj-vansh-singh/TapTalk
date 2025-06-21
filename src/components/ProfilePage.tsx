@@ -1,4 +1,5 @@
 
+
 import { useUser } from "@clerk/clerk-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef } from "react";
@@ -62,6 +63,7 @@ export default function ProfilePage() {
   const uploadImageMutation = useMutation({
     mutationFn: (file: File) => uploadProfileImage(file, user!.id),
     onSuccess: (imageUrl) => {
+      console.log("Image uploaded successfully, URL:", imageUrl);
       updateProfileMutation.mutate({ profile_image_url: imageUrl });
     },
     onError: (error) => {
@@ -85,6 +87,8 @@ export default function ProfilePage() {
         });
         return;
       }
+      
+      console.log("Starting image upload for file:", file.name);
       uploadImageMutation.mutate(file);
     }
   };
@@ -179,6 +183,11 @@ export default function ProfilePage() {
                   onChange={handleImageUpload}
                   className="hidden"
                 />
+                {uploadImageMutation.isPending && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                    <div className="text-white text-xs">Uploading...</div>
+                  </div>
+                )}
               </div>
 
               {/* Profile Info */}
