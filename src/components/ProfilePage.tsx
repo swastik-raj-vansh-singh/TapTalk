@@ -64,7 +64,7 @@ export default function ProfilePage() {
           speed={0.5}
         />
         <Navbar />
-        <div className="pt-20 flex justify-center items-center min-h-[50vh]">
+        <div className="pt-16 sm:pt-20 flex justify-center items-center min-h-[50vh]">
           <div className="text-gray-700 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-lg shadow-lg">Loading profile...</div>
         </div>
       </div>
@@ -87,30 +87,30 @@ export default function ProfilePage() {
       />
       
       <Navbar />
-      <div className="pt-20 max-w-2xl mx-auto px-4 pb-8 relative z-10">
+      <div className="pt-16 sm:pt-20 max-w-2xl mx-auto px-4 pb-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/20"
+          className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-4 sm:p-8 border border-white/20"
         >
           {/* Profile Header */}
-          <div className="flex items-start justify-between mb-8">
-            <div className="flex items-center space-x-6">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-4 sm:mb-0">
               <div className="relative">
                 <img
                   src={user?.imageUrl || "/placeholder.svg"}
                   alt={displayName}
-                  className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white shadow-lg object-cover"
                 />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 text-center sm:text-left">
                 {isEditing ? (
                   <div className="space-y-3">
                     <input
                       type="text"
                       value={editedName}
                       onChange={(e) => setEditedName(e.target.value)}
-                      className="text-2xl font-bold bg-white/70 border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="text-xl sm:text-2xl font-bold bg-white/70 border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Your name"
                     />
                     <textarea
@@ -123,7 +123,7 @@ export default function ProfilePage() {
                   </div>
                 ) : (
                   <div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">{displayName}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{displayName}</h1>
                     <p className="text-gray-600 leading-relaxed">{displayBio}</p>
                   </div>
                 )}
@@ -131,14 +131,14 @@ export default function ProfilePage() {
             </div>
             
             {/* Edit Controls */}
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
               {isEditing ? (
                 <>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleSave}
-                    className="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg"
+                    className="flex items-center justify-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors shadow-lg text-sm sm:text-base"
                   >
                     <Save className="w-4 h-4" />
                     <span>Save</span>
@@ -147,7 +147,7 @@ export default function ProfilePage() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleCancel}
-                    className="flex items-center space-x-2 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg"
+                    className="flex items-center justify-center space-x-2 bg-gray-500 hover:bg-gray-600 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors shadow-lg text-sm sm:text-base"
                   >
                     <X className="w-4 h-4" />
                     <span>Cancel</span>
@@ -158,7 +158,7 @@ export default function ProfilePage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleEdit}
-                  className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors shadow-lg"
+                  className="flex items-center justify-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors shadow-lg text-sm sm:text-base"
                 >
                   <Edit2 className="w-4 h-4" />
                   <span>Edit Profile</span>
@@ -168,21 +168,21 @@ export default function ProfilePage() {
           </div>
 
           {/* Profile Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-center space-x-3 text-gray-600">
-              <Mail className="w-5 h-5" />
-              <span>{user?.primaryEmailAddress?.emailAddress}</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <div className="flex items-center space-x-3 text-gray-600 text-sm sm:text-base">
+              <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="truncate">{user?.primaryEmailAddress?.emailAddress}</span>
             </div>
-            <div className="flex items-center space-x-3 text-gray-600">
-              <Calendar className="w-5 h-5" />
+            <div className="flex items-center space-x-3 text-gray-600 text-sm sm:text-base">
+              <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Joined {joinedDate}</span>
             </div>
-            <div className="flex items-center space-x-3 text-gray-600">
-              <User className="w-5 h-5" />
+            <div className="flex items-center space-x-3 text-gray-600 text-sm sm:text-base">
+              <User className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>@{user?.username}</span>
             </div>
-            <div className="flex items-center space-x-3 text-gray-600">
-              <MapPin className="w-5 h-5" />
+            <div className="flex items-center space-x-3 text-gray-600 text-sm sm:text-base">
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>TapTalk Community</span>
             </div>
           </div>
