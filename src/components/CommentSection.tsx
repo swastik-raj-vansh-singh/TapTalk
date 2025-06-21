@@ -30,6 +30,8 @@ export default function CommentSection({ postId }: CommentSectionProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments', postId] });
       setNewComment("");
+      // Auto-minimize comment section after commenting
+      setShowComments(false);
       toast({
         title: "Comment added",
         description: "Your comment has been posted successfully.",

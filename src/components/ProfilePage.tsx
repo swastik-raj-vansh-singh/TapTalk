@@ -1,22 +1,21 @@
-
 import { useUser } from "@clerk/clerk-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useRef } from "react";
-import { getUserProfile, updateUserProfile, uploadProfileImage, fetchPosts } from "@/lib/api";
+import { useState } from "react";
+import { getUserProfile, updateUserProfile, fetchPosts } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, Edit3, Save, X } from "lucide-react";
+import { Edit3, Save, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import Navbar from "./Navbar";
 import PostCard from "./PostCard";
+import Footer from "./Footer";
 
 export default function ProfilePage() {
   const { user } = useUser();
   const queryClient = useQueryClient();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
@@ -39,7 +38,7 @@ export default function ProfilePage() {
   });
 
   const updateProfileMutation = useMutation({
-    mutationFn: (updates: { name?: string; bio?: string; profile_image_url?: string }) =>
+    mutationFn: (updates: { name?: string; bio?: string }) =>
       updateUserProfile(user!.id, updates),
     onSuccess: () => {
       // Invalidate all related queries to refresh the data
@@ -62,40 +61,6 @@ export default function ProfilePage() {
       });
     },
   });
-
-  const uploadImageMutation = useMutation({
-    mutationFn: (file: File) => uploadProfileImage(file, user!.id),
-    onSuccess: (imageUrl) => {
-      console.log("Image uploaded successfully, URL:", imageUrl);
-      // Immediately update the profile with the new image URL
-      updateProfileMutation.mutate({ profile_image_url: imageUrl });
-    },
-    onError: (error) => {
-      console.error("Error uploading image:", error);
-      toast({
-        title: "Error",
-        description: "Failed to upload image. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: "Please select an image smaller than 5MB.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      console.log("Starting image upload for file:", file.name);
-      uploadImageMutation.mutate(file);
-    }
-  };
 
   const handleEdit = () => {
     setEditForm({
@@ -165,7 +130,7 @@ export default function ProfilePage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-6">
-              {/* Profile Image */}
+              {/* Profile Image - Display only, no edit functionality */}
               <div className="relative">
                 <Avatar className="w-24 h-24">
                   <AvatarImage 
@@ -176,27 +141,6 @@ export default function ProfilePage() {
                     {(userProfile?.name || user?.fullName || 'U').charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploadImageMutation.isPending}
-                >
-                  <Camera className="w-4 h-4" />
-                </Button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-                {uploadImageMutation.isPending && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-                    <div className="text-white text-xs">Uploading...</div>
-                  </div>
-                )}
               </div>
 
               {/* Profile Info */}
@@ -272,6 +216,7 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

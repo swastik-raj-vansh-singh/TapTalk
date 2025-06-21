@@ -6,6 +6,7 @@ import { fetchPosts, upsertUserProfile } from "@/lib/api";
 import Navbar from "./Navbar";
 import CreatePost from "./CreatePost";
 import PostCard from "./PostCard";
+import Footer from "./Footer";
 
 export default function FeedPage() {
   const { user } = useUser();
@@ -83,6 +84,7 @@ export default function FeedPage() {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
