@@ -3,7 +3,7 @@ import { Renderer, Program, Mesh, Color, Triangle } from "ogl";
 import { useEffect, useRef } from "react";
 
 interface IridescenceProps extends React.HTMLAttributes<HTMLDivElement> {
-  color?: [number, number, number];
+  iridescenceColor?: [number, number, number];
   speed?: number;
   amplitude?: number;
   mouseReact?: boolean;
@@ -53,7 +53,7 @@ void main() {
 `;
 
 export const Iridescence: React.FC<IridescenceProps> = ({
-  color = [1, 1, 1],
+  iridescenceColor = [1, 1, 1],
   speed = 1.0,
   amplitude = 0.1,
   mouseReact = true,
@@ -95,7 +95,7 @@ export const Iridescence: React.FC<IridescenceProps> = ({
       fragment: fragmentShader,
       uniforms: {
         uTime: { value: 0 },
-        uColor: { value: new Color(...color) },
+        uColor: { value: new Color(...iridescenceColor) },
         uResolution: {
           value: new Color(
             ctn.offsetWidth,
@@ -139,7 +139,7 @@ export const Iridescence: React.FC<IridescenceProps> = ({
       ctn.addEventListener("mousemove", handleMouseMove);
     }
     
-    program.uniforms.uColor.value.set(...color);
+    program.uniforms.uColor.value.set(...iridescenceColor);
     program.uniforms.uSpeed.value = speed;
     program.uniforms.uAmplitude.value = amplitude;
 
@@ -163,7 +163,7 @@ export const Iridescence: React.FC<IridescenceProps> = ({
       }
       rendererRef.current = null;
     };
-  }, [color, speed, amplitude, mouseReact]);
+  }, [iridescenceColor, speed, amplitude, mouseReact]);
 
   return (
     <div

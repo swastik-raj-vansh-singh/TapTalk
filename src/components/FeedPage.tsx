@@ -50,7 +50,7 @@ export default function FeedPage() {
       <div className="min-h-screen relative">
         <Iridescence 
           className="fixed inset-0 w-full h-full -z-10" 
-          color={[0.8, 0.9, 1.0]}
+          iridescenceColor={[0.8, 0.9, 1.0]}
           mouseReact={false} 
           amplitude={0.05}
           speed={0.5}
@@ -68,7 +68,7 @@ export default function FeedPage() {
       <div className="min-h-screen relative">
         <Iridescence 
           className="fixed inset-0 w-full h-full -z-10" 
-          color={[0.8, 0.9, 1.0]}
+          iridescenceColor={[0.8, 0.9, 1.0]}
           mouseReact={false} 
           amplitude={0.05}
           speed={0.5}
@@ -86,7 +86,7 @@ export default function FeedPage() {
       {/* Iridescence Background */}
       <Iridescence 
         className="fixed inset-0 w-full h-full -z-10" 
-        color={[0.8, 0.9, 1.0]}
+        iridescenceColor={[0.8, 0.9, 1.0]}
         mouseReact={false} 
         amplitude={0.05}
         speed={0.5}
