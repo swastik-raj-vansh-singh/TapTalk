@@ -36,6 +36,11 @@ export default function FeedPage() {
     refetchInterval: 30000,
   });
 
+  const handleClap = () => {
+    // Refresh posts to get updated clap counts
+    queryClient.invalidateQueries({ queryKey: ['posts'] });
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -66,7 +71,7 @@ export default function FeedPage() {
         
         <div className="space-y-6 mt-6">
           {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post.id} post={post} onClap={handleClap} />
           ))}
           
           {posts.length === 0 && (

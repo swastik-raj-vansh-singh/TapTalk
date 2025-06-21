@@ -8,28 +8,16 @@ import { motion } from "framer-motion";
 import { Heart, MessageCircle, Share } from "lucide-react";
 import { addClap, hasUserClapped } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
-
-interface Post {
-  id: string;
-  text: string;
-  imageUrl?: string;
-  clapCount: number;
-  createdAt: string;
-  user: {
-    id: string;
-    name: string;
-    profilePicUrl?: string;
-  };
-}
+import { Post } from "@/lib/api";
 
 interface PostCardProps {
   post: Post;
-  onClap: (postId: string) => void;
+  onClap?: (postId: string) => void;
 }
 
 export default function PostCard({ post, onClap }: PostCardProps) {
   const [isClapping, setIsClapping] = useState(false);
-  const [localClapCount, setLocalClapCount] = useState(post.clapCount);
+  const [localClapCount, setLocalClapCount] = useState(post.clap_count);
   const [userHasClapped, setUserHasClapped] = useState(false);
   const [checkingClapStatus, setCheckingClapStatus] = useState(true);
   const { user } = useUser();
@@ -74,7 +62,9 @@ export default function PostCard({ post, onClap }: PostCardProps) {
     try {
       await addClap(user.id, post.id);
       setUserHasClapped(true);
-      onClap(post.id);
+      if (onClap) {
+        onClap(post.id);
+      }
       
       toast({
         title: "👏 Clapped!",
@@ -124,24 +114,24 @@ export default function PostCard({ post, onClap }: PostCardProps) {
         <div className="flex items-center space-x-3 mb-4">
           <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
             <Image
-              src={post.user.profilePicUrl || "/placeholder.svg"}
-              alt={post.user.name}
+              src={post.user_profiles?.profile_image_url || "/placeholder.svg"}
+              alt={post.user_name}
               width={40}
               height={40}
               className="w-full h-full object-cover"
             />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900">{post.user.name}</h3>
-            <p className="text-sm text-gray-500">{formatDate(post.createdAt)}</p>
+            <h3 className="font-semibold text-gray-900">{post.user_name}</h3>
+            <p className="text-sm text-gray-500">{formatDate(post.created_at)}</p>
           </div>
         </div>
 
         {/* Post Content */}
         <div className="mb-4">
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">{post.text}</p>
+          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">{post.content}</p>
           
-          {post.imageUrl && (
+          {post.image_url && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -149,7 +139,7 @@ export default function PostCard({ post, onClap }: PostCardProps) {
             >
               <div className="rounded-lg overflow-hidden bg-gray-100">
                 <Image
-                  src={post.imageUrl}
+                  src={post.image_url}
                   alt="Post image"
                   width={600}
                   height={400}

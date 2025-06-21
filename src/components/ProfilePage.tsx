@@ -1,3 +1,4 @@
+
 import { useUser } from "@clerk/clerk-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef } from "react";
@@ -103,6 +104,11 @@ export default function ProfilePage() {
   const handleCancel = () => {
     setIsEditing(false);
     setEditForm({ name: '', bio: '' });
+  };
+
+  const handleClap = () => {
+    // Refresh user posts to get updated clap counts
+    queryClient.invalidateQueries({ queryKey: ['userPosts', user?.id] });
   };
 
   if (profileLoading) {
@@ -238,7 +244,7 @@ export default function ProfilePage() {
           ) : userPosts.length > 0 ? (
             <div className="space-y-6">
               {userPosts.map((post) => (
-                <PostCard key={post.id} post={post} />
+                <PostCard key={post.id} post={post} onClap={handleClap} />
               ))}
             </div>
           ) : (
