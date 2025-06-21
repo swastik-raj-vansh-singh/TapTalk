@@ -1,3 +1,4 @@
+
 import { useUser } from "@clerk/clerk-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef } from "react";
@@ -42,14 +43,21 @@ export default function ProfilePage() {
   const updateProfileMutation = useMutation({
     mutationFn: (updates: { name?: string; bio?: string; profile_image_url?: string }) =>
       updateUserProfile(user!.id, updates),
-    onSuccess: () => {
+    onSuccess: (updatedProfile) => {
+      // Invalidate all relevant queries to refresh data across the app
       queryClient.invalidateQueries({ queryKey: ['userProfile', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] }); // Refresh main feed
+      queryClient.invalidateQueries({ queryKey: ['userPosts', user?.id] });
+      
       toast({
         title: "Profile updated",
         description: "Your profile has been successfully updated.",
       });
       setIsEditing(false);
-      setUploadedImageUrl(''); // Clear temporary image URL
+      setUploadedImageUrl('');
+      
+      // Clear the edit form to ensure fresh data on next edit
+      setEditForm({ name: '', bio: '', profile_image_url: '' });
     },
     onError: (error) => {
       console.error("Error updating profile:", error);
@@ -65,7 +73,6 @@ export default function ProfilePage() {
     mutationFn: (file: File) => uploadProfileImage(file, user!.id),
     onSuccess: (imageUrl) => {
       console.log("Image uploaded successfully, URL:", imageUrl);
-      // Store the uploaded image URL temporarily instead of immediately updating profile
       setUploadedImageUrl(imageUrl);
       setEditForm(prev => ({ ...prev, profile_image_url: imageUrl }));
       toast({
@@ -106,7 +113,7 @@ export default function ProfilePage() {
       bio: userProfile?.bio || '',
       profile_image_url: userProfile?.profile_image_url || ''
     });
-    setUploadedImageUrl(''); // Clear any temporary uploads
+    setUploadedImageUrl('');
     setIsEditing(true);
   };
 
@@ -116,7 +123,6 @@ export default function ProfilePage() {
       bio: editForm.bio
     };
     
-    // Only include profile_image_url if a new image was uploaded
     if (uploadedImageUrl) {
       updates.profile_image_url = uploadedImageUrl;
     }
@@ -127,11 +133,10 @@ export default function ProfilePage() {
   const handleCancel = () => {
     setIsEditing(false);
     setEditForm({ name: '', bio: '', profile_image_url: '' });
-    setUploadedImageUrl(''); // Clear any temporary uploads
+    setUploadedImageUrl('');
   };
 
   const handleClap = () => {
-    // Refresh user posts to get updated clap counts
     queryClient.invalidateQueries({ queryKey: ['userPosts', user?.id] });
   };
 
@@ -179,11 +184,10 @@ export default function ProfilePage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-6">
-              {/* Profile Image */}
               <div className="relative">
                 <Avatar className="w-24 h-24">
                   <AvatarImage 
-                    src={currentDisplayImage} 
+                    src={uploadedImageUrl || userProfile?.profile_image_url || user?.imageUrl} 
                     alt={userProfile?.name || 'User'} 
                   />
                   <AvatarFallback className="text-2xl">
@@ -215,7 +219,6 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              {/* Profile Info */}
               <div className="flex-1 space-y-4">
                 {!isEditing ? (
                   <>
