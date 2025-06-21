@@ -17,7 +17,7 @@ export default function LandingPage() {
       href: "#express",
       cta: "Start Expressing",
       background: (
-        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/30 to-rose-500/30 opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 opacity-80" />
       ),
       className: "",
     },
@@ -28,7 +28,7 @@ export default function LandingPage() {
       href: "#connect",
       cta: "Find Your Tribe",
       background: (
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/30 to-indigo-500/30 opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 opacity-80" />
       ),
       className: "",
     },
@@ -39,7 +39,7 @@ export default function LandingPage() {
       href: "#engage",
       cta: "Start Engaging",
       background: (
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/30 to-orange-500/30 opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-blue-500/20 opacity-80" />
       ),
       className: "",
     },
@@ -50,11 +50,15 @@ export default function LandingPage() {
       href: "#discover",
       cta: "Explore Now",
       background: (
-        <div className="absolute inset-0 bg-gradient-to-br from-green-500/30 to-emerald-500/30 opacity-80" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-indigo-500/20 opacity-80" />
       ),
       className: "",
     },
   ];
+
+  const handleWatchDemo = () => {
+    window.open('https://drive.google.com/file/d/1z-XESz869KWlk5MoEM7aHF-_7mYWU84U/view?usp=sharing', '_blank');
+  };
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
@@ -142,7 +146,10 @@ export default function LandingPage() {
               Start Your Journey
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <button className="px-8 py-4 bg-white/20 backdrop-blur-sm text-gray-800 font-semibold rounded-xl border border-white/30 hover:bg-white/30 transition-all duration-300 text-lg">
+            <button 
+              onClick={handleWatchDemo}
+              className="px-8 py-4 bg-white/20 backdrop-blur-sm text-gray-800 font-semibold rounded-xl border border-white/30 hover:bg-white/30 transition-all duration-300 text-lg"
+            >
               Watch Demo
             </button>
           </motion.div>
