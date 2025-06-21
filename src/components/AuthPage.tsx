@@ -2,8 +2,37 @@
 import { SignIn, SignUp } from "@clerk/clerk-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 
 export default function AuthPage() {
+  const { isSignedIn } = useUser();
+  const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detect mobile device
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate('/feed');
+    }
+  }, [isSignedIn, navigate]);
+
+  // Get current URL for proper redirects
+  const currentUrl = window.location.origin;
+  const redirectUrl = `${currentUrl}/feed`;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50 p-4">
       <Card className="w-full max-w-md">
@@ -37,10 +66,13 @@ export default function AuthPage() {
                       card: "shadow-none border-0",
                       headerTitle: "hidden",
                       headerSubtitle: "hidden",
+                      socialButtonsBlockButton: isMobile ? "w-full text-sm" : "",
+                      socialButtonsBlockButtonText: isMobile ? "text-sm" : "",
                     }
                   }}
-                  fallbackRedirectUrl="/feed"
-                  forceRedirectUrl="/feed"
+                  redirectUrl={redirectUrl}
+                  afterSignInUrl={redirectUrl}
+                  routing="hash"
                 />
               </div>
             </TabsContent>
@@ -54,10 +86,13 @@ export default function AuthPage() {
                       card: "shadow-none border-0",
                       headerTitle: "hidden",
                       headerSubtitle: "hidden",
+                      socialButtonsBlockButton: isMobile ? "w-full text-sm" : "",
+                      socialButtonsBlockButtonText: isMobile ? "text-sm" : "",
                     }
                   }}
-                  fallbackRedirectUrl="/feed"
-                  forceRedirectUrl="/feed"
+                  redirectUrl={redirectUrl}
+                  afterSignUpUrl={redirectUrl}
+                  routing="hash"
                 />
               </div>
             </TabsContent>

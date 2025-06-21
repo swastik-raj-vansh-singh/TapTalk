@@ -19,7 +19,16 @@ if (!PUBLISHABLE_KEY) {
 }
 
 const App = () => (
-  <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+  <ClerkProvider 
+    publishableKey={PUBLISHABLE_KEY}
+    appearance={{
+      baseTheme: undefined,
+      variables: {
+        colorPrimary: "#7c3aed",
+        colorTextOnPrimaryBackground: "#ffffff",
+      }
+    }}
+  >
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
