@@ -1,4 +1,4 @@
-
+ 
 # TapTalk - A Modern Social Media Platform
 
 A beautiful, full-stack social media application built with Next.js, featuring user authentication, post creation, and engaging interactions.
